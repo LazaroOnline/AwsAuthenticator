@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "AwsCredentialManager": {
+      "commandName": "Project",
+      "commandLineArgs": ""
+      //"commandLineArgs": "--Aws.TokenCode 123456"
+    }
+  }
+}

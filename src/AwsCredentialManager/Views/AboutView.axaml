@@ -1,0 +1,51 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 mc:Ignorable="d" d:DesignWidth="390" d:DesignHeight="260"
+             x:Class="AwsCredentialManager.Views.AboutView">
+
+	<UserControl.Styles>
+		<Style Selector="TextBox">
+			<Setter Property="Background" Value="Transparent"/>
+			<Setter Property="BorderThickness" Value="0"/>
+			<Setter Property="IsReadOnly" Value="True"/>
+		</Style>
+	</UserControl.Styles>
+
+	<Border Background="#111111">
+		<StackPanel Margin="5">
+			
+			<TextBlock TextAlignment="Center" Text="About AwsCredentialManager" Margin="0,0,0,8" FontSize="18"/>
+			
+			<Image Source="/Assets/Icon.ico" Width="120" Margin="0,-25,0,-20"/>
+			
+			<TextBox TextAlignment="Center">
+				Developed by A. Lazaro, 2021.
+			</TextBox>
+			
+			<TextBox TextAlignment="Center" Text="{Binding GitVersion}"/>
+
+			<StackPanel Margin="5" Orientation="Horizontal" HorizontalAlignment="Center">
+				
+				<Button Command="{Binding OpenLinkLicense}"
+					Background="Transparent" BorderThickness="0" Cursor="Hand" Foreground="Aqua">
+					MIT License
+				</Button>
+				
+				<Button Command="{Binding OpenLinkGitHub}"
+					Width="80" HorizontalContentAlignment="Center" Background="Transparent" BorderThickness="0" Cursor="Hand" Foreground="Aqua">
+					GitHub
+				</Button>
+				
+				<Button Command="{Binding OnCloseView}"
+					Width="80" HorizontalContentAlignment="Center" Margin="0,5,0,0" FontSize="18" >
+					OK
+				</Button>
+				
+			</StackPanel>
+
+		</StackPanel>
+	</Border>
+
+</UserControl>

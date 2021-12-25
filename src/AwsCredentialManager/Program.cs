@@ -1,0 +1,119 @@
+using System;
+using System.IO;
+using System.Linq;
+using System.Collections.Generic;
+using Splat;
+using Avalonia;
+using Avalonia.ReactiveUI;
+using Avalonia.Controls.ApplicationLifetimes;
+using Microsoft.Extensions.Configuration;
+using AwsCredentialManager.Core.Services;
+using AwsCredentialManager.ViewModels;
+
+namespace AwsCredentialManager
+{
+	public class Program
+	{
+		public enum AppCommand
+		{
+			UpdateToken,
+		}
+
+		public static string ParameterNameAwsToken = $"{nameof(AppSettings.Aws)}:{nameof(AwsSettings.TokenCode)}";
+
+		public static Dictionary<string, string> CommandlineShortKeyMap = new Dictionary<string, string>()
+		{
+			{ "-C", ParameterNameAwsToken },
+			{ "-T", ParameterNameAwsToken },
+			{ "-A", $"{nameof(AppSettings.Aws)}:{nameof(AwsSettings.AccountId)}" },
+			{ "-U", $"{nameof(AppSettings.Aws)}:{nameof(AwsSettings.UserName)}" },
+			{ "-P", $"{nameof(AppSettings.Aws)}:{nameof(AwsSettings.Profile)}" },
+		};
+
+		// Initialization code. Don't use any Avalonia, third-party APIs or any SynchronizationContext-reliant code before AppMain is called:
+		// things aren't initialized yet and stuff might break.
+		[STAThread]
+		public static void Main(string[] args)
+		{
+			Console.WriteLine($"Starting {nameof(AwsCredentialManager)} app...");
+
+			var configBuilder = new ConfigurationBuilder()
+				.SetBasePath(Directory.GetCurrentDirectory())
+				.AddJsonFile(AppSettings.FILENAME, optional: true)
+				.AddUserSecrets<Program>()
+				.AddCommandLine(args, CommandlineShortKeyMap);
+			var config = configBuilder.Build();
+
+			// Dependency Injection.
+			RegisterServices(config);
+
+			var awsSettings = Splat.Locator.Current.GetService<AwsSettings>();
+			var hasTokenCodeParam = !string.IsNullOrWhiteSpace(awsSettings?.TokenCode);
+			//var parameterNameAwsToken = $"{nameof(AppSettings.Aws)}:{nameof(AwsSettings.TokenCode)}";
+			//var isTokenParameterInCommandLine = args.Any(arg => IsCommandArgument(arg, parameterNameAwsToken));
+			//if (isTokenParameterInCommandLine)
+			if (hasTokenCodeParam)
+			{
+				var viewModel = Splat.Locator.Current.GetService<AwsCredentialManagerViewModel>();
+				viewModel.UpdateCredentialsCommand();
+				Console.WriteLine(viewModel.Logs);
+				return;
+			}
+			var isUpdateTokenCommandLineRequest = args.Any(arg => IsCommandArgument(arg, AppCommand.UpdateToken));
+			if (isUpdateTokenCommandLineRequest)
+			{
+				var viewModel = Splat.Locator.Current.GetService<AwsCredentialManagerViewModel>();
+				viewModel.AutoUpdateCredentialsCommand();
+				Console.WriteLine(viewModel.Logs);
+				return;
+			}
+
+			BuildAvaloniaApp()
+			.StartWithClassicDesktopLifetime(args);
+		}
+
+		// Avalonia configuration, don't remove; also used by visual designer.
+		public static AppBuilder BuildAvaloniaApp()
+			=> AppBuilder.Configure<App>()
+				.UsePlatformDetect()
+				.LogToTrace()
+				.UseReactiveUI();
+
+
+		// https://www.reactiveui.net/docs/handbook/dependency-inversion/
+		// https://dev.to/ingvarx/avaloniaui-dependency-injection-4aka
+		// Example: https://github.com/rbmkio/radish/blob/master/src/Rbmk.Radish/Program.cs
+		// Other ways of DI: https://github.com/egramtel/egram.tel/blob/master/src/Tel.Egram/Program.cs
+		public static void RegisterServices(IConfiguration config)
+		{
+			RegisterServices(Locator.CurrentMutable, Locator.Current, config);
+		}
+
+		public static void RegisterServices(IMutableDependencyResolver services, IReadonlyDependencyResolver resolver, IConfiguration config)
+		{
+			var appSettings = config.Get<AppSettings>() ?? new AppSettings();
+
+			services.Register<AppSettings>(() => config.Get<AppSettings>());
+			services.Register<AppSettingsWriter>(() => new AppSettingsWriter());
+			services.Register<IAwsCredentialUpdater>(() => new Core.Services.AwsCredentialUpdaterCmd());
+			services.Register<IAwsCredentialManager>(() => new Core.Services.AwsCredentialManager());
+			services.Register<AwsSettings>(() => appSettings.Aws);
+			//services.Register<AwsSettings>(() => config.Get<AppSettings>().Aws);
+			services.Register<AwsCredentialManagerViewModel>(() => new AwsCredentialManagerViewModel());
+			
+		}
+
+		public static bool IsCommandArgument(string arg, AppCommand command)
+		{
+			return IsCommandArgument(arg, command.ToString());
+		}
+
+		public static bool IsCommandArgument(string arg, string command)
+		{
+			var commandName = command.ToLower();
+			var argName = arg.ToLower().TrimStart('-', '/', '\\').Trim();
+			return argName == commandName;
+		}
+
+	}
+}

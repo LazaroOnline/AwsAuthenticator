@@ -1,0 +1,1 @@
+assembly-informational-format: 'git-{ShortSha}-{BranchName}--{CommitDate}--pending-{UncommittedChanges}'
