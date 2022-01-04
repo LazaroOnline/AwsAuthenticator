@@ -11,6 +11,12 @@ namespace AwsCredentialManager.Views
 		public AwsCredentialManagerForm()
 		{
 			InitializeComponent();
+
+			var awsTokenTextBox = this.FindControl<TextBox>("AwsTokenTextBox");
+			if (awsTokenTextBox != null)
+			{
+				awsTokenTextBox.AttachedToVisualTree += (s, e) => awsTokenTextBox.Focus();
+			}
 		}
 
 		private void InitializeComponent()

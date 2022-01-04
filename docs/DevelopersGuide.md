@@ -18,3 +18,19 @@ Other UI options are:
 dotnet new -i Microsoft.Maui.Templates
 dotnet new maui
 ```
+
+## Future work
+
+### Add Auto MFA auth:
+Add a client MFA authentication, so this app can authenticate itself, 
+without the user requiring to user their phones and entering a code at all.  
+See:  
+https://github.com/glacasa/TwoStepsAuthenticator#client-usage
+
+### Add Code-signing
+- https://stackoverflow.com/questions/252226/signing-a-windows-exe-file
+- https://www.thesslstore.com/knowledgebase/code-signing-sign-code/sign-code-microsoft-authenticode/
+- Makecert.exe https://docs.microsoft.com/en-us/previous-versions/dotnet/netframework-2.0/bfsktky3(v=vs.80)
+- SignTool https://docs.microsoft.com/en-gb/windows/win32/seccrypto/signtool
+
+
