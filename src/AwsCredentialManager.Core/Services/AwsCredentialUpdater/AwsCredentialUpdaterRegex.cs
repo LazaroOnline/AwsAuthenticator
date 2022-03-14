@@ -57,5 +57,10 @@ namespace AwsCredentialManager.Core.Services
 			);
 		}
 
+		public string AwsGetCurrentUserProfile()
+		{
+			throw new NotImplementedException();
+		}
+
 	}
 }

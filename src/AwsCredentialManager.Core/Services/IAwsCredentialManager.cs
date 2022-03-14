@@ -10,6 +10,6 @@ namespace AwsCredentialManager.Core.Services
 	{
 		void OpenAwsCredentialsFile();
 		void UpdateAwsAccount(string awsAccountId, string awsPersonalAccountName, string tokenCode, string awsProfileToEdit);
-
+		string AwsGetCurrentUserProfile(); // TODO: remove this method from this interface.
 	}
 }

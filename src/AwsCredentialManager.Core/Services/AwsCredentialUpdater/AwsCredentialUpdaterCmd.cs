@@ -16,5 +16,9 @@ namespace AwsCredentialManager.Core.Services
 			_awsCliService.SetAwsAccount(creds, profileName);
 		}
 
+		public string AwsGetCurrentUserProfile()
+		{
+			return _awsCliService.GetProfile();
+		}
 	}
 }

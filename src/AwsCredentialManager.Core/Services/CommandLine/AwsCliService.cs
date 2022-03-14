@@ -20,7 +20,9 @@ namespace AwsCredentialManager.Core.Services
 			}
 			catch (Exception ex)
 			{
-				throw new FailToGetCredentialsException("Check the token is valid, if Aws cli is installed, and if your account is properly configured in AWS.", ex);
+				throw new FailToGetCredentialsException("Check the token is valid, if Aws cli is installed, and if your account is properly configured in AWS."
+					+ "\r\n  The command: " + command
+					+ "\r\n  Returned: '" + resultJson + "'.", ex);
 			}
 		}
 
@@ -54,11 +56,24 @@ namespace AwsCredentialManager.Core.Services
 			Environment.SetEnvironmentVariable(AwsCredentialsFile.ENVIRONMENT_VARIABLE_NAME_AWS_PROFILE, awsProfile);
 		}
 
+		public string GetProfile()
+		{
+			return Environment.GetEnvironmentVariable(AwsCredentialsFile.ENVIRONMENT_VARIABLE_NAME_AWS_PROFILE);
+		}
+
 		[Obsolete($"Use {nameof(Environment.SetEnvironmentVariable)}")]
 		public void ChangeProfile_Cmd(string? awsProfile = AwsCredentialsFile.DEFAULT_PROFILE)
 		{
 			var command = AwsCommands.ChangeAwsProfileCommand(awsProfile);
 			CommandRunner.ExecuteCommand(command);
+		}
+
+		[Obsolete($"Use {nameof(Environment.GetEnvironmentVariable)}")]
+		public string GetProfile_Cmd()
+		{
+			var command = AwsCommands.GetAwsProfileCommand();
+			var result = CommandRunner.ExecuteCommand(command);
+			return result;
 		}
 
 	}

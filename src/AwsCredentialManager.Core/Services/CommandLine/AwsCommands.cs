@@ -21,6 +21,7 @@ namespace AwsCredentialManager.Core.Services
 
 		public static string ChangeAwsProfileCommand(string awsProfile = AwsCredentialsFile.DEFAULT_PROFILE) => $@"$env:AWS_PROFILE = ""{awsProfile}""";
 
+		public static string GetAwsProfileCommand() => @"$env:AWS_PROFILE";
 
 	}
 }

@@ -49,5 +49,9 @@ namespace AwsCredentialManager.Core.Services
 			return creds;
 		}
 
+		public string AwsGetCurrentUserProfile()
+		{
+			return _awsCliService.GetProfile();
+		}
 	}
 }

@@ -19,12 +19,12 @@
 			<TextBlock TextAlignment="Center" Text="About AwsCredentialManager" Margin="0,0,0,8" FontSize="18"/>
 			
 			<Image Source="/Assets/Icon.ico" Width="120" Margin="0,-25,0,-20"/>
-			
-			<TextBox TextAlignment="Center">
+
+			<TextBlock TextAlignment="Center">
 				Developed by A. Lazaro, 2021.
-			</TextBox>
+			</TextBlock>
 			
-			<TextBox TextAlignment="Center" Text="{Binding GitVersion}"/>
+			<TextBlock TextAlignment="Center" Text="{Binding GitVersion}" />
 
 			<StackPanel Margin="5" Orientation="Horizontal" HorizontalAlignment="Center">
 				

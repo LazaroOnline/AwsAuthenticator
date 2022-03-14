@@ -21,6 +21,8 @@ namespace AwsCredentialManager.ViewModels
 
 		public string AwsTokenCode { get; set; }
 
+		public string AwsCurrentProfileName { get; set; }
+
 		private bool _isAboutVisible;
 		public bool IsAboutVisible
 		{
@@ -103,7 +105,7 @@ namespace AwsCredentialManager.ViewModels
 			}
 			catch (Exception ex)
 			{
-				Logs = $"ERROR: {ex}";
+				Logs = $"ERROR: {DateTime.Now.ToString("yyy-M-d HH:mm:ss")} {ex}";
 			}
 		}
 
@@ -112,6 +114,10 @@ namespace AwsCredentialManager.ViewModels
 			_awsCredentialManager.OpenAwsCredentialsFile();
 		}
 
+		public void ReadAwsCurrentProfileName()
+		{
+			AwsCurrentProfileName = _awsCredentialManager.AwsGetCurrentUserProfile();
+		}
 
 		public void ClearLogsCommand()
 		{
