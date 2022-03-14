@@ -19,13 +19,19 @@ namespace AwsCredentialManager.Core.Services
 				// The following commands are needed to redirect the standard output.
 				// This means that it will be redirected to the Process.StandardOutput StreamReader.
 				procStartInfo.RedirectStandardOutput = true;
+				procStartInfo.RedirectStandardError = true;
 				procStartInfo.UseShellExecute = false;
 				procStartInfo.CreateNoWindow = true;
 				var proc = new System.Diagnostics.Process();
 				proc.StartInfo = procStartInfo;
 				proc.Start();
-				string result = proc.StandardOutput.ReadToEnd();
-				return result;
+				string resultOutput = proc.StandardOutput.ReadToEnd();
+
+				if (string.IsNullOrEmpty(resultOutput)) {
+					string resultError = proc.StandardError.ReadToEnd();
+					return resultError ?? "";
+				}
+				return resultOutput;
 			}
 			catch (Exception ex)
 			{

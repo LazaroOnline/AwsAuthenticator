@@ -21,8 +21,8 @@ namespace AwsCredentialManager.Core.Services
 			catch (Exception ex)
 			{
 				throw new FailToGetCredentialsException("Check the token is valid, if Aws cli is installed, and if your account is properly configured in AWS."
-					+ "\r\n  The command: " + command
-					+ "\r\n  Returned: '" + resultJson + "'.", ex);
+					+ "\r\nThe command: \r\n  " + command
+					+ "\r\nReturned: '" + resultJson + "'.", ex);
 			}
 		}
 
