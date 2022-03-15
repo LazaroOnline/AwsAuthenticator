@@ -19,6 +19,12 @@ namespace AwsCredentialManager
 
 		public string UserName { get; set; }
 
+
+		/// <summary>
+		/// Aws Profile name with the source permanent access keys.
+		/// </summary>
+		public string? ProfileSource { get; set; }
+
 		/// <summary>
 		/// Aws Profile name to edit.
 		/// </summary>

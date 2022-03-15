@@ -4,6 +4,7 @@ using System.Text;
 using System.Reactive;
 using ReactiveUI;
 using Splat;
+using AwsCredentialManager.Core.Models;
 using AwsCredentialManager.Core.Services;
 
 namespace AwsCredentialManager.ViewModels
@@ -17,7 +18,11 @@ namespace AwsCredentialManager.ViewModels
 
 		public string AwsUserName { get; set; }
 
+		public string AwsProfileSource { get; set; } = AwsCredentialsFile.DEFAULT_PROFILE;
+
 		public string AwsProfileToEdit { get; set; }
+
+		public string AwsProfileToEdit_Default { get; set; } = "mfa";
 
 		public string AwsTokenCode { get; set; }
 
@@ -73,6 +78,7 @@ namespace AwsCredentialManager.ViewModels
 
 			AwsAccountId = awsSettings?.AccountId;
 			AwsUserName = awsSettings?.UserName; // ?? Utils.UserInfo.GetUserFullName(); // TODO: try to get the current user email.
+			AwsProfileSource = awsSettings?.ProfileSource;
 			AwsProfileToEdit = awsSettings?.Profile;
 			AwsTokenCode = awsSettings?.TokenCode;
 
@@ -95,12 +101,17 @@ namespace AwsCredentialManager.ViewModels
 			throw new NotImplementedException("The feature to automatically get the MFA token is not yet implemented.");
 		}
 
+		public string GetAwsProfileToEdit()
+		{
+			return string.IsNullOrWhiteSpace(AwsProfileToEdit) ? AwsProfileToEdit_Default : AwsProfileToEdit;
+		}
+
 		public void UpdateCredentialsCommand()
 		{
 			try
 			{
 				Logs = "Updating...";
-				_awsCredentialManager.UpdateAwsAccount(AwsAccountId, AwsUserName, AwsTokenCode, AwsProfileToEdit);
+				_awsCredentialManager.UpdateAwsAccount(AwsAccountId, AwsUserName, AwsTokenCode, AwsProfileSource, GetAwsProfileToEdit());
 				Logs = $"Updated credentials successfully at {DateTime.Now.ToString("yyy-M-d HH:mm")}.";
 			}
 			catch (Exception ex)
@@ -132,6 +143,7 @@ namespace AwsCredentialManager.ViewModels
 				{
 					AccountId = AwsAccountId,
 					UserName = AwsUserName,
+					ProfileSource = AwsProfileSource,
 					Profile = AwsProfileToEdit,
 				},
 			};

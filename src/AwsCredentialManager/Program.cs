@@ -27,6 +27,7 @@ namespace AwsCredentialManager
 			{ "-T", ParameterNameAwsToken },
 			{ "-A", $"{nameof(AppSettings.Aws)}:{nameof(AwsSettings.AccountId)}" },
 			{ "-U", $"{nameof(AppSettings.Aws)}:{nameof(AwsSettings.UserName)}" },
+			{ "-S", $"{nameof(AppSettings.Aws)}:{nameof(AwsSettings.ProfileSource)}" },
 			{ "-P", $"{nameof(AppSettings.Aws)}:{nameof(AwsSettings.Profile)}" },
 		};
 

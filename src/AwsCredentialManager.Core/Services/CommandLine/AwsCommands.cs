@@ -9,19 +9,57 @@ namespace AwsCredentialManager.Core.Services
 {
 	public static class AwsCommands
 	{
-		public static string GetAwsTokenCommand(string awsAccountId, string awsPersonalAccountName, string tokenCode, int durationSeconds = 28800)
+		public static class EnvironmentVariables
 		{
-			return $@"aws sts get-session-token --duration-seconds {durationSeconds} --serial-number ""arn:aws:iam::{awsAccountId}:mfa/{awsPersonalAccountName}"" --token-code {tokenCode}";
+			public const string AWS_PROFILE = "AWS_PROFILE";
 		}
 
-		public static string SetAwsAccountPropertyCommand(string accountPropertyName, string accountPropertyValue, string awsProfileName)
+		public static string DefaultAwsProfileIfEmpty(string? awsProfile) =>
+			string.IsNullOrWhiteSpace(awsProfile) ? AwsCredentialsFile.DEFAULT_PROFILE : awsProfile;
+
+		public static string GetAwsTokenCommand(string awsAccountId, string awsPersonalAccountName, string tokenCode, int durationSeconds = 28800) =>
+			$@"aws sts get-session-token --duration-seconds {durationSeconds} --serial-number ""arn:aws:iam::{awsAccountId}:mfa/{awsPersonalAccountName}"" --token-code {tokenCode}";
+
+		public static string SetAwsAccountPropertyCommand(string accountPropertyName, string accountPropertyValue, string? awsProfile) =>
+			$@"aws configure set {accountPropertyName} {accountPropertyValue} --profile {DefaultAwsProfileIfEmpty(awsProfile)}";
+
+		public static string SetAwsProfileCommand(string? awsProfile = AwsCredentialsFile.DEFAULT_PROFILE) =>
+			SetEnvironmentVariableCommand(EnvironmentVariables.AWS_PROFILE, DefaultAwsProfileIfEmpty(awsProfile));
+
+		public static string SetAwsProfileCommandPowerShell(string? awsProfile = AwsCredentialsFile.DEFAULT_PROFILE) =>
+			SetEnvironmentVariableCommandPowerShell(EnvironmentVariables.AWS_PROFILE, DefaultAwsProfileIfEmpty(awsProfile));
+
+		public static string SetAwsProfileCommandPowerShell(string? awsProfile = AwsCredentialsFile.DEFAULT_PROFILE, EnvironmentVariableTarget target = EnvironmentVariableTarget.User) =>
+			SetEnvironmentVariableCommandPowerShell(EnvironmentVariables.AWS_PROFILE, DefaultAwsProfileIfEmpty(awsProfile));
+
+
+		public static string SetEnvironmentVariableCommand(string envVariableName, string value) =>
+			$@"set {envVariableName}={value}";
+
+		public static string SetEnvironmentVariableCommandPowerShellLocalProcess(string envVariableName, string value) =>
+			$@"$env:{envVariableName} = '{EscapePowerShellString(value, "'")}'";
+
+		// https://www.tachytelic.net/2019/03/powershell-environment-variables/
+		public static string SetEnvironmentVariableCommandPowerShell(string envVariableName, string value, EnvironmentVariableTarget target = EnvironmentVariableTarget.User) =>
+			$@"[System.Environment]::SetEnvironmentVariable('{EscapePowerShellString(envVariableName,"'")}','{EscapePowerShellString(value, "'")}',[System.EnvironmentVariableTarget]::{target})";
+
+		public static string GetAwsProfileCommand() =>
+			GetEnvironmentVariableCommand(EnvironmentVariables.AWS_PROFILE);
+
+		public static string GetAwsProfileCommandPowerShell() =>
+			GetEnvironmentVariableCommandPowerShell(EnvironmentVariables.AWS_PROFILE);
+
+		public static string GetEnvironmentVariableCommand(string envVariableName) =>
+			$@"echo %{envVariableName}%";
+
+		public static string GetEnvironmentVariableCommandPowerShell(string envVariableName) =>
+			$@"$env:{envVariableName}";
+
+
+		public static string? EscapePowerShellString(string? value, string delimiter = "'")
 		{
-			return $@"aws configure set {accountPropertyName} {accountPropertyValue} --profile {awsProfileName}";
+			return value?.Replace(delimiter ?? "", delimiter + delimiter);
 		}
-
-		public static string ChangeAwsProfileCommand(string awsProfile = AwsCredentialsFile.DEFAULT_PROFILE) => $@"$env:AWS_PROFILE = ""{awsProfile}""";
-
-		public static string GetAwsProfileCommand() => @"$env:AWS_PROFILE";
 
 	}
 }

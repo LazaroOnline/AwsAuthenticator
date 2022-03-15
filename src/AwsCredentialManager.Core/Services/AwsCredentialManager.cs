@@ -31,22 +31,33 @@ namespace AwsCredentialManager.Core.Services
 			fileopener.Start();
 		}
 
-		public void UpdateAwsAccount(string awsAccountId, string awsPersonalAccountName, string tokenCode, string awsProfileToEdit)
+		public void UpdateAwsAccount(string awsAccountId, string awsPersonalAccountName, string tokenCode, string awsProfileSource, string awsProfileToEdit)
 		{
-			var creds = AwsGetToken(awsAccountId, awsPersonalAccountName, tokenCode);
+			var isInvalidAwsProfile = awsProfileSource.Equals(awsProfileToEdit);
+			if (isInvalidAwsProfile) {
+				throw new ArgumentException($"The parameters: '{nameof(awsProfileSource)}' and '{nameof(awsProfileSource)}' should not be the same because that would override the permanent 'aws_access_key_id'/'aws_secret_access_key' with the temporal one.");
+			}
+			var creds = AwsGetToken(awsAccountId, awsPersonalAccountName, tokenCode, awsProfileSource);
 			_awsCredentialUpdater.EditAwsCredsFile(awsProfileToEdit, creds?.Credentials);
 		}
 
-		public AwsCredentialsResponse? AwsGetToken(string awsAccountId, string awsPersonalAccountName, string tokenCode, string awsProfileName = AwsCredentialsFile.DEFAULT_PROFILE)
+		public AwsCredentialsResponse? AwsGetToken(string awsAccountId, string awsPersonalAccountName, string tokenCode, string awsProfileSource = AwsCredentialsFile.DEFAULT_PROFILE)
 		{
 			var currentAwsProfile = Environment.GetEnvironmentVariable(AwsCredentialsFile.ENVIRONMENT_VARIABLE_NAME_AWS_PROFILE);
-			_awsCliService.ChangeProfile(awsProfileName);
+			// No need to set at the user level, the process and it's child process inherits the env vars.
+			var envVarLevel = EnvironmentVariableTarget.Process; // EnvironmentVariableTarget.User
+			_awsCliService.ChangeProfile(awsProfileSource, envVarLevel);
 
-			var creds = _awsCliService.GetToken(awsAccountId, awsPersonalAccountName, tokenCode);
-
-			_awsCliService.ChangeProfile(currentAwsProfile);
-
-			return creds;
+			try
+			{
+				var creds = _awsCliService.GetToken(awsAccountId, awsPersonalAccountName, tokenCode, awsProfileSource);
+				
+				return creds;
+			}
+			finally {
+				// Reset the AWS profile to the value it had before this operation.
+				_awsCliService.ChangeProfile(currentAwsProfile, envVarLevel);
+			}
 		}
 
 		public string AwsGetCurrentUserProfile()

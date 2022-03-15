@@ -13,7 +13,7 @@ namespace AwsCredentialManager.Core.Services
 
 		public void EditAwsCredsFile(string profileName, AwsCredentials? creds)
 		{
-			_awsCliService.SetAwsAccount(creds, profileName);
+			_awsCliService.SetAwsAccountTempCredentials(creds, profileName);
 		}
 
 		public string AwsGetCurrentUserProfile()

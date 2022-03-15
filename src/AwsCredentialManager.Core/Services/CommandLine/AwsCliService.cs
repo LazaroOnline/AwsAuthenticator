@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using AwsCredentialManager.Core.Models;
@@ -9,9 +10,11 @@ namespace AwsCredentialManager.Core.Services
 {
 	public class AwsCliService
 	{
-		public AwsCredentialsResponse? GetToken(string awsAccountId, string awsPersonalAccountName, string tokenCode)
+		public AwsCredentialsResponse? GetToken(string awsAccountId, string awsPersonalAccountName, string tokenCode, string awsProfileToEdit = AwsCredentialsFile.DEFAULT_PROFILE)
 		{
-			var command = AwsCommands.GetAwsTokenCommand(awsAccountId, awsPersonalAccountName, tokenCode);
+			awsProfileToEdit = string.IsNullOrWhiteSpace(awsProfileToEdit) ? AwsCredentialsFile.DEFAULT_PROFILE : awsProfileToEdit;
+			var command = AwsCommands.SetAwsProfileCommand(awsProfileToEdit);
+			command += "&& " + AwsCommands.GetAwsTokenCommand(awsAccountId, awsPersonalAccountName, tokenCode);
 			var resultJson = CommandRunner.ExecuteCommand(command);
 			try
 			{
@@ -26,7 +29,12 @@ namespace AwsCredentialManager.Core.Services
 			}
 		}
 
-		public void SetAwsAccount(AwsCredentials? creds, string? awsProfile = AwsCredentialsFile.DEFAULT_PROFILE)
+		/// <summary>
+		/// This sets up "aws_access_key_id" and "aws_secret_access_key" and "aws_session_token" to use the temporal credentials.123456
+		/// It is important not to overwrite your permanent "aws_access_key_id" and "aws_secret_access_key" 
+		/// used to get the temporal credentials with the temporal ones.
+		/// </summary>
+		public void SetAwsAccountTempCredentials(AwsCredentials? creds, string? awsProfile = AwsCredentialsFile.DEFAULT_PROFILE)
 		{
 			SetAwsAccount_AccessKey(creds.SecretAccessKey, awsProfile);
 			SetAwsAccount_AccessKeyId(creds.AccessKeyId, awsProfile);
@@ -51,9 +59,9 @@ namespace AwsCredentialManager.Core.Services
 			CommandRunner.ExecuteCommand(command);
 		}
 
-		public void ChangeProfile(string? awsProfile = AwsCredentialsFile.DEFAULT_PROFILE)
+		public void ChangeProfile(string? awsProfile = AwsCredentialsFile.DEFAULT_PROFILE, EnvironmentVariableTarget target = EnvironmentVariableTarget.Process)
 		{
-			Environment.SetEnvironmentVariable(AwsCredentialsFile.ENVIRONMENT_VARIABLE_NAME_AWS_PROFILE, awsProfile);
+			Environment.SetEnvironmentVariable(AwsCredentialsFile.ENVIRONMENT_VARIABLE_NAME_AWS_PROFILE, awsProfile, target);
 		}
 
 		public string GetProfile()
@@ -64,7 +72,7 @@ namespace AwsCredentialManager.Core.Services
 		[Obsolete($"Use {nameof(Environment.SetEnvironmentVariable)}")]
 		public void ChangeProfile_Cmd(string? awsProfile = AwsCredentialsFile.DEFAULT_PROFILE)
 		{
-			var command = AwsCommands.ChangeAwsProfileCommand(awsProfile);
+			var command = AwsCommands.SetAwsProfileCommand(awsProfile);
 			CommandRunner.ExecuteCommand(command);
 		}
 
@@ -73,7 +81,9 @@ namespace AwsCredentialManager.Core.Services
 		{
 			var command = AwsCommands.GetAwsProfileCommand();
 			var result = CommandRunner.ExecuteCommand(command);
-			return result;
+			// "echo" command introduces an extra new line at the end, so lets remove it:
+			var resultCleaned = Regex.Replace(result ?? "", "\r\n$", "");
+			return resultCleaned;
 		}
 
 	}
