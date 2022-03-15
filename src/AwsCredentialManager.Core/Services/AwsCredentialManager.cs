@@ -43,7 +43,7 @@ namespace AwsCredentialManager.Core.Services
 
 		public AwsCredentialsResponse? AwsGetToken(string awsAccountId, string awsPersonalAccountName, string tokenCode, string awsProfileSource = AwsCredentialsFile.DEFAULT_PROFILE)
 		{
-			var currentAwsProfile = Environment.GetEnvironmentVariable(AwsCredentialsFile.ENVIRONMENT_VARIABLE_NAME_AWS_PROFILE);
+			var currentAwsProfile = Environment.GetEnvironmentVariable(EnvironmentVariables.AWS_PROFILE);
 			// No need to set at the user level, the process and it's child process inherits the env vars.
 			var envVarLevel = EnvironmentVariableTarget.Process; // EnvironmentVariableTarget.User
 			_awsCliService.ChangeProfile(awsProfileSource, envVarLevel);

@@ -61,12 +61,12 @@ namespace AwsCredentialManager.Core.Services
 
 		public void ChangeProfile(string? awsProfile = AwsCredentialsFile.DEFAULT_PROFILE, EnvironmentVariableTarget target = EnvironmentVariableTarget.Process)
 		{
-			Environment.SetEnvironmentVariable(AwsCredentialsFile.ENVIRONMENT_VARIABLE_NAME_AWS_PROFILE, awsProfile, target);
+			Environment.SetEnvironmentVariable(EnvironmentVariables.AWS_PROFILE, awsProfile, target);
 		}
 
 		public string GetProfile()
 		{
-			return Environment.GetEnvironmentVariable(AwsCredentialsFile.ENVIRONMENT_VARIABLE_NAME_AWS_PROFILE);
+			return Environment.GetEnvironmentVariable(EnvironmentVariables.AWS_PROFILE);
 		}
 
 		[Obsolete($"Use {nameof(Environment.SetEnvironmentVariable)}")]

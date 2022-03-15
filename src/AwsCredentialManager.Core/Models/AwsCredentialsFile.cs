@@ -8,7 +8,6 @@ namespace AwsCredentialManager.Core.Models
 {
 	public static class AwsCredentialsFile
 	{
-		public const string ENVIRONMENT_VARIABLE_NAME_AWS_PROFILE = "AWS_PROFILE";
 		public const string DEFAULT_PROFILE = "default";
 
 		public const string FILEPATH_RELATIVE = ".aws/credentials";

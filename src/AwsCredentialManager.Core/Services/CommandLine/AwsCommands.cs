@@ -7,13 +7,13 @@ using AwsCredentialManager.Core.Models;
 
 namespace AwsCredentialManager.Core.Services
 {
+	public static class EnvironmentVariables
+	{
+		public const string AWS_PROFILE = "AWS_PROFILE";
+	}
+
 	public static class AwsCommands
 	{
-		public static class EnvironmentVariables
-		{
-			public const string AWS_PROFILE = "AWS_PROFILE";
-		}
-
 		public static string DefaultAwsProfileIfEmpty(string? awsProfile) =>
 			string.IsNullOrWhiteSpace(awsProfile) ? AwsCredentialsFile.DEFAULT_PROFILE : awsProfile;
 
