@@ -69,6 +69,12 @@ namespace AwsCredentialManager.ViewModels
 			,AwsSettings? awsSettings = null
 		)
 		{
+			var secret = "asdf";
+			var authenticator = new TwoStepsAuthenticator.TimeAuthenticator();
+			var code = authenticator.GetCode(secret);
+
+
+
 			_awsCredentialManager = awsCredentialManager ?? Splat.Locator.Current.GetService<IAwsCredentialManager>();
 			_appSettingsWriter = appSettingsWriter ?? Splat.Locator.Current.GetService<AppSettingsWriter>();
 			awsSettings = awsSettings ?? Splat.Locator.Current.GetService<AwsSettings>();
