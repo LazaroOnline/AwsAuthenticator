@@ -52,7 +52,7 @@ Just running the app will show the UI with a form to fill in all required config
 The configuration is automatically saved in the `AppSettings.json` file when the app closes.
 
 
-### Console Mode
+### CMD Console Mode
 This app can be used from the command-line, 
 if certain command-line parameters are found like the `--Aws:TokenCode` parameter, the app will run in console mode instead of launching the UI.
 Example:  
@@ -66,14 +66,44 @@ If the app is already configured in the `AppSettings.json` file, then you only n
 AwsCredentialManager.exe -Token 123456 
 ```
 
+#### CMD: Update aws credentials
+To further automate the aws credentials update, once the app is configured with the required fields, 
+you can run this app from the command-line using the argument parameter `-UpdateCreds` 
+and it will automatically update your credentials without firing up the UI and close the app after it finishes.
+
+> You can use this `-UpdateCreds` cmd mode to create a recurrent task in the Task-Scheduler everyday and forget about having to manually manage it.
+
+
+#### CMD: Copy token
+In cases like login to the aws-console web, you want to generate a token and copy it to the aws web.  
+To speedup this flow, you can run the app with the ,cmd argument parameter `--CopyToken` 
+and it will automatically generate and copy the token to the clipboard and then close the app instantly.
+
+
 ## Configuration
 The configuration is stored in a file named `AppSettings.json` placed next to the application.  
 
- Config parameter    | Short Name | Description
----------------------|------------|---------------------------------------------------------------------------------
- Aws > AccountId     |    -A      | 12 digit number of the AWS project account.
- Aws > UserName      |    -U      | Personal AWS user name, usually your email.
- Aws > ProfileSource |    -S      | AWS profile name that already contains the access keys. It should already exist in your `.aws\credentials` file.
- Aws > Profile       |    -P      | AWS profile name where the temp credentials will be added. If it doesn't exist it will be auto-generated.
- Aws > Token         | -T or -C   | MFA personal user token (one time token).
+ Config parameter            | Short Name | Description
+-----------------------------|------------|---------------------------------------------------------------------------------
+ Aws > AccountId             |    -A      | 12 digit number of the AWS project account.
+ Aws > UserName              |    -U      | Personal AWS user name, usually your email.
+ Aws > ProfileSource         |    -S      | AWS profile name that already contains the access keys. It should already exist in your `.aws\credentials` file.
+ Aws > Profile               |    -P      | AWS profile name where the temp credentials will be added. If it doesn't exist it will be auto-generated.
+ Aws > Token                 | -T or -C   | MFA personal user token (one time token).
+ Aws > MfaGeneratorSecretKey |    -M      | MFA generator secret key used when configuring.
+
+
+
+## Setup this app as your MFA Device
+
+From the AWS-console, assign a device as MFA token generator by going to top right corner menu: 
+'Security Credentials' > 'Manage MFA device'.  
+You will have to remove any previously assigned device in order to be able to add a new one.  
+Insert the 64 alpha-numeric secret key into the `Authenticator secret key` field 
+to be able to generate the tokens instead of entering the token manually by reading it from another device/phone.
+
+> Notice AWS doesn't support managing multiple devices, but even so it is still possible to have multiple MFA generators at the same time.
+The only catch is that removing the Device as MFA will remove all of them.
+See [this request in aws forum](https://forums.aws.amazon.com/thread.jspa?threadID=137055&start=100&tstart=0).
+
 

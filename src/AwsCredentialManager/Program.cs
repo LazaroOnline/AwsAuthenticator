@@ -16,7 +16,8 @@ namespace AwsCredentialManager
 	{
 		public enum AppCommand
 		{
-			UpdateToken,
+			UpdateCreds,
+			CopyToken,
 		}
 
 		public static string ParameterNameAwsToken = $"{nameof(AppSettings.Aws)}:{nameof(AwsSettings.TokenCode)}";
@@ -29,6 +30,7 @@ namespace AwsCredentialManager
 			{ "-U", $"{nameof(AppSettings.Aws)}:{nameof(AwsSettings.UserName)}" },
 			{ "-S", $"{nameof(AppSettings.Aws)}:{nameof(AwsSettings.ProfileSource)}" },
 			{ "-P", $"{nameof(AppSettings.Aws)}:{nameof(AwsSettings.Profile)}" },
+			{ "-M", $"{nameof(AppSettings.Aws)}:{nameof(AwsSettings.MfaGeneratorSecretKey)}" },
 		};
 
 		// Initialization code. Don't use any Avalonia, third-party APIs or any SynchronizationContext-reliant code before AppMain is called:
@@ -60,8 +62,18 @@ namespace AwsCredentialManager
 				Console.WriteLine(viewModel.Logs);
 				return;
 			}
-			var isUpdateTokenCommandLineRequest = args.Any(arg => IsCommandArgument(arg, AppCommand.UpdateToken));
-			if (isUpdateTokenCommandLineRequest)
+
+			var isCopyTokenCommandLineRequest = HasCommandArgument(args, AppCommand.CopyToken);
+			if (isCopyTokenCommandLineRequest)
+			{
+				var viewModel = Splat.Locator.Current.GetService<AwsCredentialManagerViewModel>();
+				viewModel.GenerateTokenAndCopyToClipboardCommand().Wait();
+				Console.WriteLine(viewModel.Logs);
+				return;
+			}
+
+			var isUpdateCredsCommandLineRequest = HasCommandArgument(args, AppCommand.UpdateCreds);
+			if (isUpdateCredsCommandLineRequest)
 			{
 				var viewModel = Splat.Locator.Current.GetService<AwsCredentialManagerViewModel>();
 				viewModel.AutoUpdateCredentialsCommand();
@@ -69,8 +81,7 @@ namespace AwsCredentialManager
 				return;
 			}
 
-			BuildAvaloniaApp()
-			.StartWithClassicDesktopLifetime(args);
+			BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
 		}
 
 		// Avalonia configuration, don't remove; also used by visual designer.
@@ -102,6 +113,11 @@ namespace AwsCredentialManager
 			//services.Register<AwsSettings>(() => config.Get<AppSettings>().Aws);
 			services.Register<AwsCredentialManagerViewModel>(() => new AwsCredentialManagerViewModel());
 			
+		}
+
+		public static bool HasCommandArgument(string[] args, AppCommand command)
+		{
+			return args.Any(arg => IsCommandArgument(arg, command));
 		}
 
 		public static bool IsCommandArgument(string arg, AppCommand command)

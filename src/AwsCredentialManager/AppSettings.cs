@@ -19,6 +19,7 @@ namespace AwsCredentialManager
 
 		public string UserName { get; set; }
 
+		public string MfaGeneratorSecretKey { get; set; }
 
 		/// <summary>
 		/// Aws Profile name with the source permanent access keys.
@@ -32,7 +33,7 @@ namespace AwsCredentialManager
 
 		/// <summary>
 		/// MFA Multi-Factor Authentication token code.
-		/// It is a 6 digits number (at least with google authenticator).
+		/// It is a 6 digits number.
 		/// </summary>
 		public string? TokenCode { get; set; }
 	}

@@ -5,6 +5,9 @@ namespace AwsCredentialManager.Core.Services
 {
 	public class AwsCredentialManager : IAwsCredentialManager
 	{
+		/// <summary>Length of the alpha-numeric secret key used by AWS to link a device as MFA token generator.</summary>
+		public const int MFA_DEVICE_GENERATOR_SECRET_KEY_LENGTH = 64;
+
 		private IAwsCredentialUpdater _awsCredentialUpdater;
 		private AwsCliService _awsCliService;
 

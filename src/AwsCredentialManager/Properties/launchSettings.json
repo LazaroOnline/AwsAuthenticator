@@ -2,8 +2,11 @@
   "profiles": {
     "AwsCredentialManager": {
       "commandName": "Project",
-      "commandLineArgs": ""
+      //"commandLineArgs": ""
+      //"commandLineArgs": "-CopyToken"
+      //"commandLineArgs": "-UpdateCreds"
       //"commandLineArgs": "--Aws.TokenCode 123456"
+      "commandLineArgs": ""
     }
   }
 }
