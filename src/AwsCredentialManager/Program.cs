@@ -43,7 +43,7 @@ namespace AwsCredentialManager
 			var configBuilder = new ConfigurationBuilder()
 				.SetBasePath(Directory.GetCurrentDirectory())
 				.AddJsonFile(AppSettings.FILENAME, optional: true)
-				.AddUserSecrets<Program>()
+				.AddUserSecrets<Program>(optional: true)
 				.AddCommandLine(args, CommandlineShortKeyMap);
 			var config = configBuilder.Build();
 

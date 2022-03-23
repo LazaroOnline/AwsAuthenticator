@@ -43,7 +43,6 @@ namespace AwsCredentialManager.ViewModels
 			set => this.RaiseAndSetIfChanged(ref _awsTokenCode, value);
 		}
 
-
 		public string AwsCurrentProfileName { get; set; }
 
 		private bool _isAboutVisible;
@@ -58,6 +57,13 @@ namespace AwsCredentialManager.ViewModels
 		{
 			get => _isValidAwsMfaGeneratorSecretKey;
 			set => this.RaiseAndSetIfChanged(ref _isValidAwsMfaGeneratorSecretKey, value);
+		}
+
+		private bool _hasAwsTokenCode;
+		public bool HasAwsTokenCode
+		{
+			get => _hasAwsTokenCode;
+			set => this.RaiseAndSetIfChanged(ref _hasAwsTokenCode, value);
 		}
 
 		private string _logs;
@@ -80,6 +86,9 @@ namespace AwsCredentialManager.ViewModels
 
 		public bool GetIsLogEmpty() => 
 			string.IsNullOrWhiteSpace(Logs);
+
+		public bool GetIsAwsTokenCodeEmpty() =>
+			string.IsNullOrWhiteSpace(AwsTokenCode);
 
 		// https://avaloniaui.net/docs/controls/button
 		public ReactiveCommand<Unit, Unit> OnOpenAboutWindow { get; }
@@ -117,10 +126,13 @@ namespace AwsCredentialManager.ViewModels
 				this.IsValidAwsMfaGeneratorSecretKey = GetIsValidAwsMfaGeneratorSecretKey();
 			});
 
+			this.WhenAnyValue(x => x.AwsTokenCode).Subscribe(x => {
+				this.HasAwsTokenCode = !GetIsAwsTokenCodeEmpty();
+			});
+
 			this.WhenAnyValue(x => x.Logs).Subscribe(x => {
 				this.IsLogEmpty = GetIsLogEmpty();
 			});
-
 
 			OnOpenAboutWindow = ReactiveCommand.Create(() => {
 				this.IsAboutVisible = true;
@@ -143,6 +155,11 @@ namespace AwsCredentialManager.ViewModels
 				AwsTokenCode = GenerateTokenFromAuthenticatorKey();
 				Logs = $"CODE: {DateTime.Now.ToString(DATE_FORMAT)}:  {AwsTokenCode}";
 			});
+		}
+
+		public async Task CopyTokenCodeCommand()
+		{
+			await Clipboard.SetTextAsync(AwsTokenCode);
 		}
 
 		public async Task GenerateTokenAndCopyToClipboardCommand()
