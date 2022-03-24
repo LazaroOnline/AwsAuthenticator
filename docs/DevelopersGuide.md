@@ -20,23 +20,23 @@ dotnet new maui
 ```
 
 ## Future work
-
-### Add Copy button next to the Token-Code:
-There may be a class to do it using `Classes="..."` property.
-References:  
-- [Avalonia TextBox docs](https://docs.avaloniaui.net/docs/controls/textbox) 
-- [Avalonia TextBox.xaml source](https://github.com/AvaloniaUI/Avalonia/blob/master/src/Avalonia.Themes.Fluent/Controls/TextBox.xaml#L5) 
-
-
-### Hide the MFA Device Generator secret key
-Currently it is stored in the `AppSettings.json` file as `MfaGeneratorSecretKey`.  
-Maybe it would be better secured using some kind of Windows-Credentials-Manager API, 
-or at least encoded in some way to add obfuscation.
-
-
-### Add Code-signing
-- https://stackoverflow.com/questions/252226/signing-a-windows-exe-file
-- https://www.thesslstore.com/knowledgebase/code-signing-sign-code/sign-code-microsoft-authenticode/
-- Makecert.exe https://docs.microsoft.com/en-us/previous-versions/dotnet/netframework-2.0/bfsktky3(v=vs.80)
-- SignTool https://docs.microsoft.com/en-gb/windows/win32/seccrypto/signtool
+- Rename the project to something like one of these names:
+  - `PC-MFA`
+  - `AutoMfa`
+  - `AwsAutoMfa`
+  - `AwsAuthenticator`
+  - `PcAuthenticator`
+  - `PcMultiFactorAuthenticator`
+- Show the countdown timer displaying until when the token is valid.
+- Show loading spinner instead of freezing the UI during operations.  
+- Remember the window size and position after re-opening the app.  
+- Hide the MFA Device Generator secret key:  
+    Currently it is stored in the `AppSettings.json` file as `MfaGeneratorSecretKey`.  
+    Maybe it would be better secured using some kind of Windows-Credentials-Manager API, 
+    or at least encoded in some way to add obfuscation.
+- Add Code-signing
+  * https://stackoverflow.com/questions/252226/signing-a-windows-exe-file
+  * https://www.thesslstore.com/knowledgebase/code-signing-sign-code/sign-code-microsoft-authenticode/
+  * Makecert.exe https://docs.microsoft.com/en-us/previous-versions/dotnet/netframework-2.0/bfsktky3(v=vs.80)
+  * SignTool https://docs.microsoft.com/en-gb/windows/win32/seccrypto/signtool
 

@@ -159,7 +159,9 @@ namespace AwsCredentialManager.ViewModels
 
 		public async Task CopyTokenCodeCommand()
 		{
-			await Clipboard.SetTextAsync(AwsTokenCode);
+			WithExceptionLogging(async () => {
+				await Clipboard.SetTextAsync(AwsTokenCode);
+			});
 		}
 
 		public async Task GenerateTokenAndCopyToClipboardCommand()

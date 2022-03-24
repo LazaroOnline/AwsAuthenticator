@@ -22,7 +22,9 @@ namespace AwsCredentialManager.Core.Models
 
 		public override string ToString()
 		{
-			return $@"{nameof(AssemblyFileName)}: {AssemblyFileName}{Environment.NewLine}"
+			var filenameDesc = $@"{nameof(AssemblyFileName)}: {AssemblyFileName}{Environment.NewLine}";
+			var hasFilename = !string.IsNullOrWhiteSpace(AssemblyFileName);
+			return $@"{(hasFilename? filenameDesc : "")}"
 			//	+ $@"{nameof(CreationDate)}: {GetCreationDate}{Environment.NewLine}"
 			//	+ $@"{nameof(ModificationDate)}: {GetModificationDate}{Environment.NewLine}"
 				+ $@"{nameof(Version)}: {Version}{Environment.NewLine}"

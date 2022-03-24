@@ -31,6 +31,21 @@ Editing the following fields, from the selected profile, with the new values fro
 - `aws_session_token`
 
 
+## Setup this App as your MFA-Device
+
+From the AWS-console, assign a device as MFA token generator by going to top right corner menu: 
+'Security Credentials' > 'Manage MFA device'.  
+You will have to remove any previously assigned device in order to be able to add a new one.  
+Insert the 64 alpha-numeric secret key into the `Authenticator secret key` field 
+to be able to generate the tokens instead of entering the token manually by reading it from another device/phone.
+
+> Notice AWS doesn't support managing multiple devices, but even so it is still possible to have multiple MFA generators at the same time.
+The only catch is that removing the Device as MFA will remove all of them.
+See [this request in aws forum](https://forums.aws.amazon.com/thread.jspa?threadID=137055&start=100&tstart=0).
+
+![Aws MFA setup window](./AwsMfaSetup.png)
+
+
 ### Troubleshooting Errors
 - `MultiFactorAuthentication failed with invalid MFA one time pass code.`:  
    This shows when the token is invalid or has already expired or already been used once.
@@ -91,19 +106,4 @@ The configuration is stored in a file named `AppSettings.json` placed next to th
  Aws > Profile               |    -P      | AWS profile name where the temp credentials will be added. If it doesn't exist it will be auto-generated.
  Aws > Token                 | -T or -C   | MFA personal user token (one time token).
  Aws > MfaGeneratorSecretKey |    -M      | MFA generator secret key used when configuring.
-
-
-
-## Setup this app as your MFA Device
-
-From the AWS-console, assign a device as MFA token generator by going to top right corner menu: 
-'Security Credentials' > 'Manage MFA device'.  
-You will have to remove any previously assigned device in order to be able to add a new one.  
-Insert the 64 alpha-numeric secret key into the `Authenticator secret key` field 
-to be able to generate the tokens instead of entering the token manually by reading it from another device/phone.
-
-> Notice AWS doesn't support managing multiple devices, but even so it is still possible to have multiple MFA generators at the same time.
-The only catch is that removing the Device as MFA will remove all of them.
-See [this request in aws forum](https://forums.aws.amazon.com/thread.jspa?threadID=137055&start=100&tstart=0).
-
 

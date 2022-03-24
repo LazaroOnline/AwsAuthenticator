@@ -12,29 +12,28 @@ namespace AwsCredentialManager.Core.Services
 	{
 		public static GitVersionAssemblyInfo GetGitVersionAssemblyInfo()
 		{
-			//var mainAssembly = typeof(DaiusService.Controllers.StoreController).Assembly;
-			var mainAssembly = Assembly.GetExecutingAssembly();
-			return GetGitVersionAssemblyInfo(mainAssembly);
+			var appAssembly = CurrentApp.GetAssembly();
+			// In "single-file" builds the assembly.Location returns null, so it is required to get the location from somewhere else:
+			var appLocation = CurrentApp.GetLocation();
+			return GetGitVersionAssemblyInfo(appAssembly, appLocation);
 		}
 
-		public static GitVersionAssemblyInfo GetGitVersionAssemblyInfo(Assembly assembly)
+		public static GitVersionAssemblyInfo GetGitVersionAssemblyInfo(Assembly appAssembly, string? assemblyLocation = null)
 		{
-			var assemblyFileName = System.IO.Path.GetFileName(assembly.Location);
-			var creationDate = System.IO.File.GetCreationTime(assembly.Location);
-			var modificationDate = System.IO.File.GetLastWriteTime(assembly.Location);
-			var version = assembly.GetName()?.Version?.ToString();
-			var fileVersion = System.Diagnostics.FileVersionInfo.GetVersionInfo(assembly.Location)?.FileVersion;
-			var informationalVersion = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
+			assemblyLocation ??= appAssembly.Location;
 
-			var versionInfo = new GitVersionAssemblyInfo
+			var versionInfo = new GitVersionAssemblyInfo();
+			versionInfo.Version = appAssembly.GetName()?.Version?.ToString();
+			versionInfo.InformationalVersion = appAssembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
+
+			var isValidAssemblyLocation = !string.IsNullOrWhiteSpace(assemblyLocation);
+			if (isValidAssemblyLocation)
 			{
-				AssemblyFileName = assemblyFileName,
-				CreationDate = creationDate,
-				ModificationDate = modificationDate,
-				Version = version,
-				FileVersion = fileVersion,
-				InformationalVersion = informationalVersion,
-			};
+				versionInfo.AssemblyFileName = System.IO.Path.GetFileName(assemblyLocation);
+				versionInfo.CreationDate = System.IO.File.GetCreationTime(assemblyLocation);
+				versionInfo.ModificationDate = System.IO.File.GetLastWriteTime(assemblyLocation);
+				versionInfo.FileVersion = System.Diagnostics.FileVersionInfo.GetVersionInfo(assemblyLocation)?.FileVersion;
+			}
 			// return JsonConvert.SerializeObject(versionInfo);
 			return versionInfo;
 		}
