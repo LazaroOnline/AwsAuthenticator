@@ -23,6 +23,10 @@ namespace AwsCredentialManager.Core.Services
 		public static string SetAwsAccountPropertyCommand(string accountPropertyName, string accountPropertyValue, string? awsProfile) =>
 			$@"aws configure set {accountPropertyName} {accountPropertyValue} --profile {DefaultAwsProfileIfEmpty(awsProfile)}";
 
+		// https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html
+		public static string GetAwsLocalProfileListCommand() =>
+			$@"aws configure list-profiles";
+
 		public static string SetAwsProfileCommand(string? awsProfile = AwsCredentialsFile.DEFAULT_PROFILE) =>
 			SetEnvironmentVariableCommand(EnvironmentVariables.AWS_PROFILE, DefaultAwsProfileIfEmpty(awsProfile));
 

@@ -29,6 +29,14 @@ namespace AwsCredentialManager.Core.Services
 			}
 		}
 
+		public List<string> GetAwsLocalProfileList()
+		{
+			var command = AwsCommands.GetAwsLocalProfileListCommand();
+			var profiles = CommandRunner.ExecuteCommand(command);
+			var profileList = profiles.Trim('\r', '\n').Split(Environment.NewLine)?.ToList() ?? new List<string>();
+			return profileList;
+		}
+
 		/// <summary>
 		/// This sets up "aws_access_key_id" and "aws_secret_access_key" and "aws_session_token" to use the temporal credentials.123456
 		/// It is important not to overwrite your permanent "aws_access_key_id" and "aws_secret_access_key" 
@@ -41,8 +49,28 @@ namespace AwsCredentialManager.Core.Services
 			SetAwsAccount_SessionToken(creds.SessionToken, awsProfile);
 		}
 
+		public bool EnsureAwsCredentialsFileEndsWithNewLine()
+		{
+			var filePath = AwsCredentialsFile.FilePath;
+			var fileContent = File.ReadAllText(filePath);
+			var fileEndsWithNewLine = Regex.IsMatch(fileContent, @"\r\n$");
+			var fileContentEdited = fileContent;
+			var fileWasEdited = false;
+			if (!fileEndsWithNewLine)
+			{
+				fileContentEdited += "\r\n\r\n";
+				fileWasEdited = true;
+			}
+			File.WriteAllText(filePath, fileContentEdited);
+			return fileWasEdited;
+		}
+
 		public void SetAwsAccount_AccessKey(string? accessKey, string? awsProfile = AwsCredentialsFile.DEFAULT_PROFILE)
 		{
+			// The command "aws configure set..." doesn't work properly if the credentials file doesn't end with a new line,
+			// it would start writing the new profile at the end of the file without adding a newline itself, thus generating an invalid credentials file.
+			// See: https://github.com/aws/aws-cli/issues/6874
+			EnsureAwsCredentialsFileEndsWithNewLine();
 			var command = AwsCommands.SetAwsAccountPropertyCommand(AwsCredentialsFile.Properties.AWS_SECRET_ACCESS_KEY, accessKey, awsProfile);
 			CommandRunner.ExecuteCommand(command);
 		}

@@ -8,7 +8,7 @@ using AwsCredentialManager.Core.Models;
 
 namespace AwsCredentialManager.Core.Services
 {
-	public class GitVersionService
+	public static class GitVersionService
 	{
 		public static GitVersionAssemblyInfo GetGitVersionAssemblyInfo()
 		{

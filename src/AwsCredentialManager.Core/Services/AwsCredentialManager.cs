@@ -34,6 +34,11 @@ namespace AwsCredentialManager.Core.Services
 			fileopener.Start();
 		}
 
+		public List<string> GetAwsLocalProfileList()
+		{
+			return _awsCliService.GetAwsLocalProfileList();
+		}
+
 		public void UpdateAwsAccount(string awsAccountId, string awsPersonalAccountName, string tokenCode, string awsProfileSource, string awsProfileToEdit)
 		{
 			var isInvalidAwsProfile = awsProfileSource.Equals(awsProfileToEdit);

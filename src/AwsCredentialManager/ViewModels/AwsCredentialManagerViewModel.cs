@@ -3,6 +3,7 @@ using System.Linq;
 using System.Text;
 using System.Reactive;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using ReactiveUI;
 using Splat;
 using Avalonia;
@@ -32,7 +33,12 @@ namespace AwsCredentialManager.ViewModels
 
 		public string AwsProfileSource { get; set; } = AwsCredentialsFile.DEFAULT_PROFILE;
 
-		public string AwsProfileToEdit { get; set; }
+		private string _awsProfileToEdit;
+		public string AwsProfileToEdit
+		{
+			get => _awsProfileToEdit;
+			set => this.RaiseAndSetIfChanged(ref _awsProfileToEdit, value);
+		}
 
 		public string AwsProfileToEdit_Default { get; set; } = AwsCredentialsFile.DEFAULT_PROFILE_MFA;
 
@@ -41,6 +47,13 @@ namespace AwsCredentialManager.ViewModels
 		{
 			get => _awsTokenCode;
 			set => this.RaiseAndSetIfChanged(ref _awsTokenCode, value);
+		}
+
+		private List<string> _awsLocalProfileList = new List<string>();
+		public List<string> AwsLocalProfileList
+		{
+			get => _awsLocalProfileList;
+			set => this.RaiseAndSetIfChanged(ref _awsLocalProfileList, value);
 		}
 
 		public string AwsCurrentProfileName { get; set; }
@@ -121,6 +134,8 @@ namespace AwsCredentialManager.ViewModels
 			AwsProfileToEdit = awsSettings?.Profile;
 			AwsMfaGeneratorSecretKey = awsSettings?.MfaGeneratorSecretKey;
 			AwsTokenCode = awsSettings?.TokenCode;
+
+			AwsLocalProfileList = _awsCredentialManager.GetAwsLocalProfileList();
 
 			this.WhenAnyValue(x => x.AwsMfaGeneratorSecretKey).Subscribe(x => {
 				this.IsValidAwsMfaGeneratorSecretKey = GetIsValidAwsMfaGeneratorSecretKey();
@@ -206,7 +221,8 @@ namespace AwsCredentialManager.ViewModels
 					AwsTokenCode = GenerateTokenFromAuthenticatorKey();
 				}
 				Logs = "Updating...";
-				_awsCredentialManager.UpdateAwsAccount(AwsAccountId, AwsUserName, AwsTokenCode, AwsProfileSource, GetAwsProfileToEdit());
+				var profileToEdit = GetAwsProfileToEdit();
+				_awsCredentialManager.UpdateAwsAccount(AwsAccountId, AwsUserName, AwsTokenCode, AwsProfileSource, profileToEdit);
 				Logs = $"Updated credentials successfully at {DateTime.Now.ToString(DATE_FORMAT)}.";
 			});
 		}

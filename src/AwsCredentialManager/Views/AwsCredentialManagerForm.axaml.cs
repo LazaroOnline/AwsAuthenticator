@@ -1,4 +1,5 @@
 using Avalonia;
+using Avalonia.Input;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
@@ -22,6 +23,20 @@ namespace AwsCredentialManager.Views
 		private void InitializeComponent()
 		{
 			AvaloniaXamlLoader.Load(this);
+
+			var autoCompleteAwsProfileToEdit = this.FindControl<AutoCompleteBox>("AutoCompleteAwsProfileToEdit");
+			var autoCompleteAwsProfileSource = this.FindControl<AutoCompleteBox>("AutoCompleteAwsProfileSource");
+			// TODO: show the options dropdown when the AutoCompleteBox gets the focus before typing anything.
+			/*
+			autoCompleteAwsProfileToEdit.GotFocus += (sender, e) => {
+				if (!autoCompleteAwsProfileToEdit.IsDropDownOpen)
+					autoCompleteAwsProfileToEdit.IsDropDownOpen = true;
+			};
+			autoCompleteAwsProfileSource.GotFocus += (sender, e) => {
+				if (!autoCompleteAwsProfileSource.IsDropDownOpen)
+					autoCompleteAwsProfileSource.IsDropDownOpen = true;
+			};
+			*/
 		}
 
 		// TODO: try to bind "OnCloseAboutPopup" directly from XAML instead from this code-behind:
