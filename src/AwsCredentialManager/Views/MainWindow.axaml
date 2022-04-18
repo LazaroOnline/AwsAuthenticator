@@ -4,14 +4,27 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:views="clr-namespace:AwsCredentialManager.Views;assembly=AwsCredentialManager"
-		Background="#222222"
 		Width="500" Height="360"
-		MinWidth="410" MinHeight="300"
+		MinWidth="440" MinHeight="300"
         mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="360"
         x:Class="AwsCredentialManager.Views.MainWindow"
+		TransparencyLevelHint="AcrylicBlur"
+		Background="Transparent"
+		ExtendClientAreaToDecorationsHint="True"
         Icon="/Assets/Icon.ico"
         Title="AwsCredentialManager">
 
-	<views:AwsCredentialManagerForm x:Name="AwsCredentialManagerForm" />
+	<Grid RowDefinitions="30,*">
+
+		<!-- Title bar -->
+		<!-- https://docs.avaloniaui.net/tutorials/music-store-app/creating-a-modern-looking-window -->
+		<Grid ColumnDefinitions="Auto,*" IsHitTestVisible="False" Background="Black">
+			<Image		Grid.Column="0" VerticalAlignment="Center" Source="/Assets/Icon.ico" Width="18" Margin="12,0,12,0" ></Image>
+			<TextBlock	Grid.Column="1" VerticalAlignment="Center" FontSize="12" >Aws Credential Manager</TextBlock>
+		</Grid>
+
+		<!-- Window content -->
+		<views:AwsCredentialManagerForm x:Name="AwsCredentialManagerForm" Grid.Row="1" Background="#222222"/>
+	</Grid>
 
 </Window>
