@@ -8,5 +8,6 @@
 
     <Application.Styles>
         <FluentTheme Mode="Dark"/>
-    </Application.Styles>
+		<StyleInclude Source="avares://AvaloniaProgressRing/Styles/ProgressRing.xaml"/>
+	</Application.Styles>
 </Application>

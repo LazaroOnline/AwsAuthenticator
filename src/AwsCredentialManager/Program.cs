@@ -33,12 +33,35 @@ namespace AwsCredentialManager
 			{ "-M", $"{nameof(AppSettings.Aws)}:{nameof(AwsSettings.MfaGeneratorSecretKey)}" },
 		};
 
+		public static bool IsHelpCommand(string[] args)
+		{
+			return args?.Any(arg =>
+				IsCommandArgument(arg, "h") ||
+				IsCommandArgument(arg, "help")
+			) ?? false;
+		}
+
+		public static void DisplayHelp()
+		{
+			// TODO: make the project able to print to the console, at the moment Console.WriteLine doesnt work with proj type WinExe.
+			Console.WriteLine($"Aws Credentials Manager HELP:");
+			foreach (var shortCommand in CommandlineShortKeyMap)
+			{
+				Console.WriteLine($"{shortCommand.Key}  {shortCommand.Value}");
+			}
+		}
+
 		// Initialization code. Don't use any Avalonia, third-party APIs or any SynchronizationContext-reliant code before AppMain is called:
 		// things aren't initialized yet and stuff might break.
 		[STAThread]
 		public static void Main(string[] args)
 		{
 			Console.WriteLine($"Starting {nameof(AwsCredentialManager)} app...");
+
+			if (IsHelpCommand(args)) {
+				DisplayHelp();
+				return;
+			}
 
 			var configBuilder = new ConfigurationBuilder()
 				.SetBasePath(Directory.GetCurrentDirectory())

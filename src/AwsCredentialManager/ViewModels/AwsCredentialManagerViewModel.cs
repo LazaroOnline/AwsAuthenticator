@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Text;
 using System.Reactive;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using ReactiveUI;
@@ -12,11 +13,12 @@ using AwsCredentialManager.Core.Services;
 
 namespace AwsCredentialManager.ViewModels
 {
-	public class AwsCredentialManagerViewModel : ViewModelBase
+	public class AwsCredentialManagerViewModel : BaseViewModel
 	{
 		private IAwsCredentialManager _awsCredentialManager;
 		private AppSettingsWriter _appSettingsWriter;
 
+		#region Properties
 		public string AwsAccountId { get; set; }
 
 		public string AwsUserName { get; set; }
@@ -72,6 +74,13 @@ namespace AwsCredentialManager.ViewModels
 			set => this.RaiseAndSetIfChanged(ref _isValidAwsMfaGeneratorSecretKey, value);
 		}
 
+		private bool _isEnabledGenerateTokenButton;
+		public bool IsEnabledGenerateTokenButton
+		{
+			get => _isEnabledGenerateTokenButton;
+			set => this.RaiseAndSetIfChanged(ref _isEnabledGenerateTokenButton, value);
+		}
+
 		private bool _hasAwsTokenCode;
 		public bool HasAwsTokenCode
 		{
@@ -79,33 +88,11 @@ namespace AwsCredentialManager.ViewModels
 			set => this.RaiseAndSetIfChanged(ref _hasAwsTokenCode, value);
 		}
 
-		private string _logs;
-		public string Logs
-		{
-			get => _logs;
-			set => this.RaiseAndSetIfChanged(ref _logs, value);
-		}
-
-		private bool _isLogEmpty;
-		public bool IsLogEmpty
-		{
-			get => _isLogEmpty;
-			set => this.RaiseAndSetIfChanged(ref _isLogEmpty, value);
-		}
-
-		public bool GetIsValidAwsMfaGeneratorSecretKey() =>
-			!string.IsNullOrWhiteSpace(AwsMfaGeneratorSecretKey)
-			&& AwsMfaGeneratorSecretKey.Length == Core.Services.AwsCredentialManager.MFA_DEVICE_GENERATOR_SECRET_KEY_LENGTH;
-
-		public bool GetIsLogEmpty() => 
-			string.IsNullOrWhiteSpace(Logs);
-
-		public bool GetIsAwsTokenCodeEmpty() =>
-			string.IsNullOrWhiteSpace(AwsTokenCode);
-
 		// https://avaloniaui.net/docs/controls/button
 		public ReactiveCommand<Unit, Unit> OnOpenAboutWindow { get; }
 		public ReactiveCommand<Unit, Unit> OnCloseAboutPopup { get; }
+
+		#endregion
 
 
 		// Constructor required by the designer tools.
@@ -141,12 +128,12 @@ namespace AwsCredentialManager.ViewModels
 				this.IsValidAwsMfaGeneratorSecretKey = GetIsValidAwsMfaGeneratorSecretKey();
 			});
 
-			this.WhenAnyValue(x => x.AwsTokenCode).Subscribe(x => {
-				this.HasAwsTokenCode = !GetIsAwsTokenCodeEmpty();
+			this.WhenAnyValue(x => x.AwsMfaGeneratorSecretKey, x => x.IsLoading).Subscribe(x => {
+				this.IsEnabledGenerateTokenButton = GetIsEnabledGenerateTokenButton();
 			});
 
-			this.WhenAnyValue(x => x.Logs).Subscribe(x => {
-				this.IsLogEmpty = GetIsLogEmpty();
+			this.WhenAnyValue(x => x.AwsTokenCode).Subscribe(x => {
+				this.HasAwsTokenCode = !GetIsAwsTokenCodeEmpty();
 			});
 
 			OnOpenAboutWindow = ReactiveCommand.Create(() => {
@@ -157,6 +144,17 @@ namespace AwsCredentialManager.ViewModels
 			});
 		}
 
+		public bool GetIsValidAwsMfaGeneratorSecretKey() =>
+			!string.IsNullOrWhiteSpace(AwsMfaGeneratorSecretKey)
+			&& AwsMfaGeneratorSecretKey.Length == Core.Services.AwsCredentialManager.MFA_DEVICE_GENERATOR_SECRET_KEY_LENGTH;
+
+		public bool GetIsEnabledGenerateTokenButton() =>
+			IsValidAwsMfaGeneratorSecretKey && !IsLoading;
+
+		public bool GetIsAwsTokenCodeEmpty() =>
+			string.IsNullOrWhiteSpace(AwsTokenCode);
+
+
 		public void AutoUpdateCredentialsCommand()
 		{
 			GenerateTokenCommand();
@@ -166,7 +164,8 @@ namespace AwsCredentialManager.ViewModels
 
 		public void GenerateTokenCommand()
 		{
-			WithExceptionLogging(() => {
+			//WithExceptionLogging(async () => {
+			ExecuteAsyncWithLoadingAndExceptionLogging(() => {
 				AwsTokenCode = GenerateTokenFromAuthenticatorKey();
 				Logs = $"CODE: {DateTime.Now.ToString(DATE_FORMAT)}:  {AwsTokenCode}";
 			});
@@ -174,7 +173,8 @@ namespace AwsCredentialManager.ViewModels
 
 		public async Task CopyTokenCodeCommand()
 		{
-			WithExceptionLogging(async () => {
+			//WithExceptionLogging(async () => {
+			ExecuteAsyncWithLoadingAndExceptionLogging(async () => {
 				await Clipboard.SetTextAsync(AwsTokenCode);
 			});
 		}
@@ -211,32 +211,20 @@ namespace AwsCredentialManager.ViewModels
 			return string.IsNullOrWhiteSpace(AwsProfileToEdit) ? AwsProfileToEdit_Default : AwsProfileToEdit;
 		}
 
-		public const string DATE_FORMAT = "yyy-M-d HH:mm:ss";
-		public void UpdateCredentialsCommand()
+		public async Task UpdateCredentialsCommand()
 		{
-			WithExceptionLogging(() => {
+			await ExecuteAsyncWithLoadingAndExceptionLogging(() => {
 				var hasEmptyToken = string.IsNullOrWhiteSpace(AwsTokenCode);
 				if (hasEmptyToken && IsValidAwsMfaGeneratorSecretKey)
 				{
 					AwsTokenCode = GenerateTokenFromAuthenticatorKey();
 				}
 				Logs = "Updating...";
+				// System.Threading.Thread.Sleep(6000); // Use this line for testing the loading spinner.
 				var profileToEdit = GetAwsProfileToEdit();
 				_awsCredentialManager.UpdateAwsAccount(AwsAccountId, AwsUserName, AwsTokenCode, AwsProfileSource, profileToEdit);
 				Logs = $"Updated credentials successfully at {DateTime.Now.ToString(DATE_FORMAT)}.";
 			});
-		}
-
-		public void WithExceptionLogging(Action action)
-		{
-			try
-			{
-				action();
-			}
-			catch (Exception ex)
-			{
-				Logs = $"ERROR: {DateTime.Now.ToString("yyy-M-d HH:mm:ss")} {ex}";
-			}
 		}
 
 		public void OpenAwsCredentialsFileCommand()
@@ -247,11 +235,6 @@ namespace AwsCredentialManager.ViewModels
 		public void ReadAwsCurrentProfileName()
 		{
 			AwsCurrentProfileName = _awsCredentialManager.AwsGetCurrentUserProfile();
-		}
-
-		public void ClearLogsCommand()
-		{
-			Logs = "";
 		}
 
 		public void SaveConfig()
