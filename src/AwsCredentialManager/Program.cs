@@ -7,6 +7,8 @@ using Avalonia;
 using Avalonia.ReactiveUI;
 using Avalonia.Controls.ApplicationLifetimes;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using MsLogging = Microsoft.Extensions.Logging;
 using AwsCredentialManager.Core.Services;
 using AwsCredentialManager.ViewModels;
 
@@ -43,7 +45,6 @@ namespace AwsCredentialManager
 
 		public static void DisplayHelp()
 		{
-			// TODO: make the project able to print to the console, at the moment Console.WriteLine doesnt work with proj type WinExe.
 			Console.WriteLine($"Aws Credentials Manager HELP:");
 			foreach (var shortCommand in CommandlineShortKeyMap)
 			{
@@ -51,11 +52,22 @@ namespace AwsCredentialManager
 			}
 		}
 
-		// Initialization code. Don't use any Avalonia, third-party APIs or any SynchronizationContext-reliant code before AppMain is called:
+		// Initialization code. Don't use any AvaloniaUI, third-party APIs or any SynchronizationContext-reliant code before AppMain is called:
 		// things aren't initialized yet and stuff might break.
 		[STAThread]
 		public static void Main(string[] args)
 		{
+			// TODO: make the project able to print to the console, at the moment Console.WriteLine doesn't work with proj type WinExe.
+			var factory = LoggerFactory.Create(builder =>
+				builder.AddConsole()
+					//.AddEventLog()
+					.AddFilter("Microsoft", MsLogging.LogLevel.Warning)
+					.AddFilter("System", MsLogging.LogLevel.Warning)
+					//.AddConfiguration(loggingConfiguration.GetSection("Logging"))
+			);
+			var logger = factory.CreateLogger<Program>();
+			logger.LogWarning("THIS ACM APP IS STARTING!!!");
+
 			Console.WriteLine($"Starting {nameof(AwsCredentialManager)} app...");
 
 			if (IsHelpCommand(args)) {
@@ -107,7 +119,7 @@ namespace AwsCredentialManager
 			BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
 		}
 
-		// Avalonia configuration, don't remove; also used by visual designer.
+		// AvaloniaUI configuration, don't remove; also used by visual designer.
 		public static AppBuilder BuildAvaloniaApp()
 			=> AppBuilder.Configure<App>()
 				.UsePlatformDetect()
