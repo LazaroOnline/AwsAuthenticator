@@ -162,10 +162,11 @@ namespace AwsCredentialManager.ViewModels
 		}
 
 
-		public void GenerateTokenCommand()
+		public async Task GenerateTokenCommand()
 		{
-			//WithExceptionLogging(async () => {
-			ExecuteAsyncWithLoadingAndExceptionLogging(() => {
+			// This command is fast, it could run synchronously if required.
+			// WithExceptionLogging(async () => {
+			await ExecuteAsyncWithLoadingAndExceptionLogging(() => {
 				AwsTokenCode = GenerateTokenFromAuthenticatorKey();
 				Logs = $"CODE: {DateTime.Now.ToString(DATE_FORMAT)}:  {AwsTokenCode}";
 			});
@@ -173,8 +174,9 @@ namespace AwsCredentialManager.ViewModels
 
 		public async Task CopyTokenCodeCommand()
 		{
-			//WithExceptionLogging(async () => {
-			ExecuteAsyncWithLoadingAndExceptionLogging(async () => {
+			// This command is fast, it could run synchronously if required.
+			// WithExceptionLogging(async () => {
+			await ExecuteAsyncWithLoadingAndExceptionLogging(async () => {
 				await Clipboard.SetTextAsync(AwsTokenCode);
 			});
 		}
