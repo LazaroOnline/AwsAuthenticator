@@ -146,7 +146,9 @@ namespace AwsCredentialManager.ViewModels
 
 		public bool GetIsValidAwsMfaGeneratorSecretKey() =>
 			!string.IsNullOrWhiteSpace(AwsMfaGeneratorSecretKey)
-			&& AwsMfaGeneratorSecretKey.Length == Core.Services.AwsCredentialManager.MFA_DEVICE_GENERATOR_SECRET_KEY_LENGTH;
+			// Length validation removed to allow using the MFA generator for other providers.
+			//&& AwsMfaGeneratorSecretKey.Length == Core.Services.AwsCredentialManager.MFA_DEVICE_GENERATOR_SECRET_KEY_LENGTH
+			;
 
 		public bool GetIsEnabledGenerateTokenButton() =>
 			IsValidAwsMfaGeneratorSecretKey && !IsLoading;
