@@ -15,7 +15,7 @@ namespace AwsCredentialManager.UnitTests.Core.Services.CommandLine
 	{
 
 		[Fact]
-		public async Task GetAwsLocalProfileList_ReturnsList()
+		public void GetAwsLocalProfileList_ReturnsList()
 		{
 			var service = new AwsCliService();
 			var profiles = service.GetAwsLocalProfileList();
@@ -23,7 +23,7 @@ namespace AwsCredentialManager.UnitTests.Core.Services.CommandLine
 		}
 
 		[Fact]
-		public async Task EnsureAwsCredentialsFileEndsWithNewLine_DoesntThrowExceptions()
+		public void EnsureAwsCredentialsFileEndsWithNewLine_DoesntThrowExceptions()
 		{
 			var service = new AwsCliService();
 			var act = () => service.EnsureAwsCredentialsFileEndsWithNewLine();
@@ -31,7 +31,7 @@ namespace AwsCredentialManager.UnitTests.Core.Services.CommandLine
 		}
 
 		[Fact]
-		public async Task GetProfile_ReturnsString()
+		public void GetProfile_ReturnsString()
 		{
 			var service = new AwsCliService();
 			var result = service.GetProfile();
@@ -39,7 +39,7 @@ namespace AwsCredentialManager.UnitTests.Core.Services.CommandLine
 		}
 
 		[Fact]
-		public async Task GetProfile_Cmd_ReturnsString()
+		public void GetProfile_Cmd_ReturnsString()
 		{
 			var service = new AwsCliService();
 			var result = service.GetProfile_Cmd();

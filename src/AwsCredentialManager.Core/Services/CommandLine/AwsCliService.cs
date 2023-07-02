@@ -44,6 +44,7 @@ namespace AwsCredentialManager.Core.Services
 		/// </summary>
 		public void SetAwsAccountTempCredentials(AwsCredentials? creds, string? awsProfile = AwsCredentialsFile.DEFAULT_PROFILE)
 		{
+			if (creds == null) { return; }
 			SetAwsAccount_AccessKey(creds.SecretAccessKey, awsProfile);
 			SetAwsAccount_AccessKeyId(creds.AccessKeyId, awsProfile);
 			SetAwsAccount_SessionToken(creds.SessionToken, awsProfile);

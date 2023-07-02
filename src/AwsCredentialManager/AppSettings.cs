@@ -10,21 +10,21 @@ namespace AwsCredentialManager
 	{
         public const string FILENAME = "AppSettings.json";
 
-		public AwsSettings Aws { get; set; }
+		public AwsSettings Aws { get; set; } = new AwsSettings();
 	}
 
 	public class AwsSettings
 	{
-		public string AccountId { get; set; }
+		public string AccountId { get; set; } = "";
 
-		public string UserName { get; set; }
+		public string UserName { get; set; } = "";
 
-		public string MfaGeneratorSecretKey { get; set; }
+        public string MfaGeneratorSecretKey { get; set; } = "";
 
-		/// <summary>
-		/// Aws Profile name with the source permanent access keys.
-		/// </summary>
-		public string? ProfileSource { get; set; }
+        /// <summary>
+        /// Aws Profile name with the source permanent access keys.
+        /// </summary>
+        public string? ProfileSource { get; set; }
 
 		/// <summary>
 		/// Aws Profile name to edit.

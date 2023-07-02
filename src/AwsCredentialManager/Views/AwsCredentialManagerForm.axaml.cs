@@ -24,10 +24,11 @@ namespace AwsCredentialManager.Views
 		{
 			AvaloniaXamlLoader.Load(this);
 
+            /*
+			// WIP: show the options dropdown when the AutoCompleteBox gets the focus before typing anything.
 			var autoCompleteAwsProfileToEdit = this.FindControl<AutoCompleteBox>("AutoCompleteAwsProfileToEdit");
 			var autoCompleteAwsProfileSource = this.FindControl<AutoCompleteBox>("AutoCompleteAwsProfileSource");
-			// TODO: show the options dropdown when the AutoCompleteBox gets the focus before typing anything.
-			/*
+
 			autoCompleteAwsProfileToEdit.GotFocus += (sender, e) => {
 				if (!autoCompleteAwsProfileToEdit.IsDropDownOpen)
 					autoCompleteAwsProfileToEdit.IsDropDownOpen = true;
@@ -37,14 +38,16 @@ namespace AwsCredentialManager.Views
 					autoCompleteAwsProfileSource.IsDropDownOpen = true;
 			};
 			*/
-		}
+        }
 
-		// TODO: try to bind "OnCloseAboutPopup" directly from XAML instead from this code-behind:
-		public void AboutViewExitHandler(object sender, RoutedEventArgs e)
+        // TODO: try to bind "OnCloseAboutPopup" directly from XAML instead from this code-behind:
+        public void AboutViewExitHandler(object sender, RoutedEventArgs e)
 		{
-			var viewModel = (AwsCredentialManagerViewModel)this.DataContext;
-			viewModel.IsAboutVisible = false;
-			e.Handled = true;
+			var viewModel = (AwsCredentialManagerViewModel?)this.DataContext;
+			if (viewModel != null) {
+				viewModel.IsAboutVisible = false;
+            }
+            e.Handled = true;
 		}
 
 	}

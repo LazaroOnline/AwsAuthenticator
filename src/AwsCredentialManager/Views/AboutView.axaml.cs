@@ -23,7 +23,7 @@ namespace AwsCredentialManager.Views
 		public AboutView() : this(null)
 		{ }
 
-		public AboutView(AboutViewModel viewModel = null)
+		public AboutView(AboutViewModel? viewModel)
 		{
 			this.InitializeComponent();
 			var dataContextViewModel = viewModel ?? new AboutViewModel();

@@ -12,7 +12,7 @@ namespace AwsCredentialManager
 	{
 		public static Task SetTextAsync(string text)
 		{
-			return GetApp().Clipboard.SetTextAsync(text);
+			return GetApp().Clipboard?.SetTextAsync(text) ?? Task.CompletedTask;
 		}
 
 		private static Application GetApp()

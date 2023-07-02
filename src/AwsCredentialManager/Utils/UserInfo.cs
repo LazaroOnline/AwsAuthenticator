@@ -12,10 +12,10 @@ namespace AwsCredentialManager.Utils
 {
 	public static class UserInfo
 	{
-		// TODO: get the current windows user email.
-
 		public static string GetUserFullName()
 		{
+            /*
+			// WIP: trying to get the current windows user email.
 			// https://stackoverflow.com/questions/1240373/how-do-i-get-the-current-username-in-net-using-c
 			// https://stackoverflow.com/questions/7357123/get-current-users-email-address-in-net
 			ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT UserName FROM Win32_ComputerSystem");
@@ -35,6 +35,8 @@ namespace AwsCredentialManager.Utils
 			CurrUsrEMail = DS.AccountManagement.UserPrincipal.Current.EmailAddress;
 
 			return username;
-		}
-	}
+			*/
+			return "";
+        }
+    }
 }

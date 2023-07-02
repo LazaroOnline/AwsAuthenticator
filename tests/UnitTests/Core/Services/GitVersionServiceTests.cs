@@ -15,7 +15,7 @@ namespace AwsCredentialManager.UnitTests.Core.Services
 	public class GitVersionServiceTests
 	{
 		[Fact]
-		public async Task GitVersionServiceTest()
+		public void GitVersionServiceTest()
 		{
 			var result = GitVersionService.GetGitVersionAssemblyInfo();
 			result.Should().NotBeNull();

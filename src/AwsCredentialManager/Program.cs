@@ -20,7 +20,7 @@ namespace AwsCredentialManager
 			CopyToken,
 		}
 
-		public static string ParameterNameAwsToken = $"{nameof(AppSettings.Aws)}:{nameof(AwsSettings.TokenCode)}";
+		private const string ParameterNameAwsToken = $"{nameof(AppSettings.Aws)}:{nameof(AwsSettings.TokenCode)}";
 
 		public readonly static Dictionary<string, string> CommandlineShortKeyMap = new Dictionary<string, string>()
 		{
@@ -74,11 +74,8 @@ namespace AwsCredentialManager
 			RegisterServices(config);
 
 			var awsSettings = Splat.Locator.Current.GetService<AwsSettings>();
-			var hasTokenCodeParam = !string.IsNullOrWhiteSpace(awsSettings?.TokenCode);
-			//var parameterNameAwsToken = $"{nameof(AppSettings.Aws)}:{nameof(AwsSettings.TokenCode)}";
-			//var isTokenParameterInCommandLine = args.Any(arg => IsCommandArgument(arg, parameterNameAwsToken));
-			//if (isTokenParameterInCommandLine)
-			if (hasTokenCodeParam)
+			var hasTokenCodeParam = !string.IsNullOrWhiteSpace(awsSettings?.TokenCode); // hasTokenCodeParam()
+            if (hasTokenCodeParam)
 			{
 				var viewModel = Splat.Locator.Current.GetService<AwsCredentialManagerViewModel>();
 				viewModel.UpdateCredentialsCommand().Wait();
@@ -107,8 +104,15 @@ namespace AwsCredentialManager
 			BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
 		}
 
-		// Avalonia configuration, don't remove; also used by visual designer.
-		public static AppBuilder BuildAvaloniaApp()
+		public static bool hasTokenCodeParam(string[] args)
+        {
+            var parameterNameAwsToken = $"{nameof(AppSettings.Aws)}:{nameof(AwsSettings.TokenCode)}";
+            var isTokenParameterInCommandLine = args.Any(arg => IsCommandArgument(arg, parameterNameAwsToken));
+			return isTokenParameterInCommandLine;
+        }
+
+        // Avalonia configuration, don't remove; also used by visual designer.
+        public static AppBuilder BuildAvaloniaApp()
 			=> AppBuilder.Configure<App>()
 				.UsePlatformDetect()
 				.LogToTrace()
@@ -131,14 +135,14 @@ namespace AwsCredentialManager
 
 		public static void RegisterServices(IMutableDependencyResolver services, IReadonlyDependencyResolver resolver, IConfiguration config)
 		{
+			if (config == null) { throw new ArgumentException($"Null parameter '{nameof(config)}'."); }
 			var appSettings = config.Get<AppSettings>() ?? new AppSettings();
 
-			services.Register<AppSettings>(() => config.Get<AppSettings>());
+			services.Register<AppSettings>(() => config.Get<AppSettings>() ?? new AppSettings());
 			services.Register<AppSettingsWriter>(() => new AppSettingsWriter());
 			services.Register<IAwsCredentialUpdater>(() => new Core.Services.AwsCredentialUpdaterCmd());
 			services.Register<IAwsCredentialManager>(() => new Core.Services.AwsCredentialManager());
 			services.Register<AwsSettings>(() => appSettings.Aws);
-			//services.Register<AwsSettings>(() => config.Get<AppSettings>().Aws);
 			services.Register<AwsCredentialManagerViewModel>(() => new AwsCredentialManagerViewModel());
 			
 		}

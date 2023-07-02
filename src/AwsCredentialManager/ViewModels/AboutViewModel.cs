@@ -20,7 +20,6 @@ namespace AwsCredentialManager.ViewModels
 
 		public string GitVersion { get; set; }
 
-		public ReactiveCommand<Unit, Unit> OnOpenAboutWindow { get; }
 		public ReactiveCommand<Unit, Unit> OnCloseView { get; }
 
 		public AboutViewModel()
@@ -31,8 +30,8 @@ namespace AwsCredentialManager.ViewModels
 			}
 			catch
 			{
-
-			}
+				GitVersion = "";
+            }
 			OnCloseView = ReactiveCommand.Create(() => { });
 		}
 

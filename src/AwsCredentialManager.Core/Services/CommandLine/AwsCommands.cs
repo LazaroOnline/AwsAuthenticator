@@ -30,12 +30,8 @@ namespace AwsCredentialManager.Core.Services
 		public static string SetAwsProfileCommand(string? awsProfile = AwsCredentialsFile.DEFAULT_PROFILE) =>
 			SetEnvironmentVariableCommand(EnvironmentVariables.AWS_PROFILE, DefaultAwsProfileIfEmpty(awsProfile));
 
-		public static string SetAwsProfileCommandPowerShell(string? awsProfile = AwsCredentialsFile.DEFAULT_PROFILE) =>
-			SetEnvironmentVariableCommandPowerShell(EnvironmentVariables.AWS_PROFILE, DefaultAwsProfileIfEmpty(awsProfile));
-
 		public static string SetAwsProfileCommandPowerShell(string? awsProfile = AwsCredentialsFile.DEFAULT_PROFILE, EnvironmentVariableTarget target = EnvironmentVariableTarget.User) =>
-			SetEnvironmentVariableCommandPowerShell(EnvironmentVariables.AWS_PROFILE, DefaultAwsProfileIfEmpty(awsProfile));
-
+			SetEnvironmentVariableCommandPowerShell(EnvironmentVariables.AWS_PROFILE, DefaultAwsProfileIfEmpty(awsProfile), target);
 
 		public static string SetEnvironmentVariableCommand(string envVariableName, string value) =>
 			$@"set {envVariableName}={value}";

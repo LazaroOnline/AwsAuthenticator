@@ -14,7 +14,7 @@ namespace AwsCredentialManager.UnitTests.Core.Services
 	public class AwsCredentialManagerTests
 	{
 		[Fact]
-		public async Task GetAwsLocalProfileList_ReturnsList()
+		public void GetAwsLocalProfileList_ReturnsList()
 		{
 			var service = GetServiceInstance();
 			var profiles = service.GetAwsLocalProfileList();

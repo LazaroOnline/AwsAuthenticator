@@ -87,6 +87,7 @@ you can run this app from the command-line using the argument parameter `-Update
 and it will automatically update your credentials without firing up the UI and close the app after it finishes.
 
 > You can use this `-UpdateCreds` CMD mode to create a recurrent task in the Task-Scheduler everyday and forget about having to manually manage it.
+> Check the [Task-Scheduler exported example](../scripts/TaskScheduler/LazaroOnline-AwsCredentialManager-UpdateCreds.xml).
 
 
 #### CMD: Copy token

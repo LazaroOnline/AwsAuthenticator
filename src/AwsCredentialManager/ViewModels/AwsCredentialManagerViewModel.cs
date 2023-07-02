@@ -15,8 +15,8 @@ namespace AwsCredentialManager.ViewModels
 {
 	public class AwsCredentialManagerViewModel : BaseViewModel
 	{
-		private IAwsCredentialManager _awsCredentialManager;
-		private AppSettingsWriter _appSettingsWriter;
+		private readonly IAwsCredentialManager _awsCredentialManager;
+		private readonly AppSettingsWriter _appSettingsWriter;
 
 		#region Properties
 		public string AwsAccountId { get; set; }
@@ -26,7 +26,7 @@ namespace AwsCredentialManager.ViewModels
 		/// <summary>
 		/// Token generator secret key of 64 alpha-numeric characters code from aws console in the 'Manage MFA device' section.
 		/// </summary>
-		private string _awsMfaGeneratorSecretKey;
+		private string _awsMfaGeneratorSecretKey = "";
 		public string AwsMfaGeneratorSecretKey
 		{
 			get => _awsMfaGeneratorSecretKey;
@@ -35,7 +35,7 @@ namespace AwsCredentialManager.ViewModels
 
 		public string AwsProfileSource { get; set; } = AwsCredentialsFile.DEFAULT_PROFILE;
 
-		private string _awsProfileToEdit;
+		private string _awsProfileToEdit = "";
 		public string AwsProfileToEdit
 		{
 			get => _awsProfileToEdit;
@@ -58,7 +58,7 @@ namespace AwsCredentialManager.ViewModels
 			set => this.RaiseAndSetIfChanged(ref _awsLocalProfileList, value);
 		}
 
-		public string AwsCurrentProfileName { get; set; }
+		public string AwsCurrentProfileName { get; set; } = "";
 
 		private bool _isAboutVisible;
 		public bool IsAboutVisible
@@ -103,7 +103,7 @@ namespace AwsCredentialManager.ViewModels
 		}
 
 		public AwsCredentialManagerViewModel(
-			IAwsCredentialManager? awsCredentialManager = null
+			 IAwsCredentialManager? awsCredentialManager
 			,AppSettingsWriter? appSettingsWriter = null
 			,AwsSettings? awsSettings = null
 		)
@@ -115,12 +115,12 @@ namespace AwsCredentialManager.ViewModels
 			//_awsCredentialManager = awsCredentialManager ?? new Core.AwsCredentialManager();
 			//_appSettingsWriter = appSettingsWriter ?? new AppSettingsWriter();
 
-			AwsAccountId = awsSettings?.AccountId;
-			AwsUserName = awsSettings?.UserName; // ?? Utils.UserInfo.GetUserFullName(); // TODO: try to get the current user email.
-			AwsProfileSource = awsSettings?.ProfileSource;
-			AwsProfileToEdit = awsSettings?.Profile;
-			AwsMfaGeneratorSecretKey = awsSettings?.MfaGeneratorSecretKey;
-			AwsTokenCode = awsSettings?.TokenCode;
+			AwsAccountId = awsSettings?.AccountId ?? "";
+			AwsUserName = awsSettings?.UserName ?? ""; // ?? Utils.UserInfo.GetUserFullName
+			AwsProfileSource = awsSettings?.ProfileSource ?? "";
+			AwsProfileToEdit = awsSettings?.Profile ?? "";
+			AwsMfaGeneratorSecretKey = awsSettings?.MfaGeneratorSecretKey ?? "";
+			AwsTokenCode = awsSettings?.TokenCode ?? "";
 
 			AwsLocalProfileList = _awsCredentialManager.GetAwsLocalProfileList();
 
