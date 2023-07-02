@@ -22,7 +22,7 @@ namespace AwsCredentialManager
 
 		public static string ParameterNameAwsToken = $"{nameof(AppSettings.Aws)}:{nameof(AwsSettings.TokenCode)}";
 
-		public static Dictionary<string, string> CommandlineShortKeyMap = new Dictionary<string, string>()
+		public readonly static Dictionary<string, string> CommandlineShortKeyMap = new Dictionary<string, string>()
 		{
 			{ "-C", ParameterNameAwsToken },
 			{ "-T", ParameterNameAwsToken },
@@ -43,7 +43,7 @@ namespace AwsCredentialManager
 
 		public static void DisplayHelp()
 		{
-			// TODO: make the project able to print to the console, at the moment Console.WriteLine doesnt work with proj type WinExe.
+			// TODO: make the project able to print to the console, at the moment Console.WriteLine doesn't work with project type WinExe.
 			Console.WriteLine($"Aws Credentials Manager HELP:");
 			foreach (var shortCommand in CommandlineShortKeyMap)
 			{
@@ -64,9 +64,9 @@ namespace AwsCredentialManager
 			}
 
 			var configBuilder = new ConfigurationBuilder()
-				.SetBasePath(Directory.GetCurrentDirectory())
+                .SetBasePath(GetExecutingDir())
 				.AddJsonFile(AppSettings.FILENAME, optional: true)
-				.AddUserSecrets<Program>(optional: true)
+                .AddUserSecrets<Program>(optional: true)
 				.AddCommandLine(args, CommandlineShortKeyMap);
 			var config = configBuilder.Build();
 
@@ -115,11 +115,16 @@ namespace AwsCredentialManager
 				.UseReactiveUI();
 
 
-		// https://www.reactiveui.net/docs/handbook/dependency-inversion/
-		// https://dev.to/ingvarx/avaloniaui-dependency-injection-4aka
-		// Example: https://github.com/rbmkio/radish/blob/master/src/Rbmk.Radish/Program.cs
-		// Other ways of DI: https://github.com/egramtel/egram.tel/blob/master/src/Tel.Egram/Program.cs
-		public static void RegisterServices(IConfiguration config)
+        private static string GetExecutingDir()
+        {
+            return System.AppContext.BaseDirectory ?? Directory.GetCurrentDirectory();
+        }
+
+        // https://www.reactiveui.net/docs/handbook/dependency-inversion/
+        // https://dev.to/ingvarx/avaloniaui-dependency-injection-4aka
+        // Example: https://github.com/rbmkio/radish/blob/master/src/Rbmk.Radish/Program.cs
+        // Other ways of DI: https://github.com/egramtel/egram.tel/blob/master/src/Tel.Egram/Program.cs
+        public static void RegisterServices(IConfiguration config)
 		{
 			RegisterServices(Locator.CurrentMutable, Locator.Current, config);
 		}
