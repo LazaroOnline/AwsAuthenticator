@@ -81,8 +81,8 @@ namespace AwsCredentialManager
 			if (hasTokenCodeParam)
 			{
 				var viewModel = Splat.Locator.Current.GetService<AwsCredentialManagerViewModel>();
-				viewModel.UpdateCredentialsCommand();
-				Console.WriteLine(viewModel.Logs);
+				viewModel.UpdateCredentialsCommand().Wait();
+                Console.WriteLine(viewModel.Logs);
 				return;
 			}
 
@@ -99,7 +99,7 @@ namespace AwsCredentialManager
 			if (isUpdateCredsCommandLineRequest)
 			{
 				var viewModel = Splat.Locator.Current.GetService<AwsCredentialManagerViewModel>();
-				viewModel.AutoUpdateCredentialsCommand();
+				viewModel.AutoUpdateCredentialsCommand().Wait();
 				Console.WriteLine(viewModel.Logs);
 				return;
 			}

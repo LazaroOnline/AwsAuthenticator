@@ -157,10 +157,10 @@ namespace AwsCredentialManager.ViewModels
 			string.IsNullOrWhiteSpace(AwsTokenCode);
 
 
-		public void AutoUpdateCredentialsCommand()
+		public async Task AutoUpdateCredentialsCommand()
 		{
-			GenerateTokenCommand();
-			UpdateCredentialsCommand();
+			await GenerateTokenCommand();
+            await UpdateCredentialsCommand();
 		}
 
 

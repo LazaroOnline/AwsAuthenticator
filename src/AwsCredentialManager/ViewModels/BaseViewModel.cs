@@ -89,7 +89,10 @@ namespace AwsCredentialManager.ViewModels
 			return ExecuteAsync(action, cancellationToken, taskCreationOptions, scheduler);
 		}
 
-		protected TaskScheduler UIContext = TaskScheduler.FromCurrentSynchronizationContext();
+        // "TaskScheduler.FromCurrentSynchronizationContext" would fail when running in cmd mode (there is no UI)
+        // So we check first if the current SynchronizationContext exists.
+        // https://stackoverflow.com/questions/8245926/the-current-synchronizationcontext-may-not-be-used-as-a-taskscheduler
+        protected TaskScheduler UIContext = SynchronizationContext.Current == null ? null : TaskScheduler.FromCurrentSynchronizationContext();
 
 		protected virtual Task ExecuteAsync(Action action
 			,CancellationToken cancellationToken = default(CancellationToken)
@@ -103,10 +106,12 @@ namespace AwsCredentialManager.ViewModels
 				task = Task.Factory.StartNew(action, cancellationToken, taskCreationOptions, scheduler);
 			}
 			task.ConfigureAwait(true);
-			task.ContinueWith((t) => {
-				IsLoading = false;
-			}, UIContext); // TaskScheduler.FromCurrentSynchronizationContext());
-			return task;
+			if (UIContext != null) {
+				task.ContinueWith((t) => {
+					IsLoading = false;
+				}, UIContext); // TaskScheduler.FromCurrentSynchronizationContext());
+            }
+            return task;
 		}
 
 		public void ClearLogsCommand()
