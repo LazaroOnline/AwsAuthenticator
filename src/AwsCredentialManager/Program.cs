@@ -85,26 +85,54 @@ namespace AwsCredentialManager
 
 			var isCopyTokenCommandLineRequest = HasCommandArgument(args, AppCommand.CopyToken);
 			if (isCopyTokenCommandLineRequest)
-			{
-				var viewModel = Splat.Locator.Current.GetService<AwsCredentialManagerViewModel>();
-				viewModel.GenerateTokenAndCopyToClipboardCommand().Wait();
-				Console.WriteLine(viewModel.Logs);
-				return;
-			}
+            {
+                ExecuteCommandLine(async viewModel => {
+                    if (string.IsNullOrEmpty(viewModel.AwsMfaGeneratorSecretKey)) {
+                        FileLogger.Log($"Error: Missing configuration parameter '{nameof(AppSettings.Aws.MfaGeneratorSecretKey)}'.");
+                        return;
+                    }
+                    await viewModel.GenerateTokenAndCopyToClipboardCommand();
+                    FileLogger.Log($"Token: '{viewModel.AwsTokenCode}'.");
+                }, nameof(AppCommand.CopyToken)).Wait();
+                return;
+            }
 
 			var isUpdateCredsCommandLineRequest = HasCommandArgument(args, AppCommand.UpdateCreds);
 			if (isUpdateCredsCommandLineRequest)
 			{
-				var viewModel = Splat.Locator.Current.GetService<AwsCredentialManagerViewModel>();
-				viewModel.AutoUpdateCredentialsCommand().Wait();
-				Console.WriteLine(viewModel.Logs);
+				ExecuteCommandLine(async viewModel => {
+                    if (string.IsNullOrEmpty(viewModel.AwsMfaGeneratorSecretKey)) {
+                        FileLogger.Log($"Error: Missing configuration parameter '{nameof(AppSettings.Aws.MfaGeneratorSecretKey)}'.");
+                        return;
+                    }
+                    await viewModel.AutoUpdateCredentialsCommand();
+                    FileLogger.Log($"Token used: '{viewModel.AwsTokenCode}'.");
+                }, nameof(AppCommand.UpdateCreds)).Wait();
 				return;
 			}
 
 			BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
 		}
 
-		public static bool hasTokenCodeParam(string[] args)
+		public static async Task ExecuteCommandLine(Func<AwsCredentialManagerViewModel, Task> action, string commandName = "")
+		{
+
+            FileLogger.Log($"Running command-line {commandName}");
+            var viewModel = Splat.Locator.Current.GetService<AwsCredentialManagerViewModel>();
+			try {
+				await action(viewModel);
+            } catch (Exception ex) {
+                FileLogger.Log($"Error: Unhandled exception: " + ex);
+            }
+            Console.WriteLine(viewModel.Logs);
+            if (!string.IsNullOrWhiteSpace(viewModel.Logs))
+            {
+                FileLogger.Log("Logs: " + viewModel.Logs);
+            }
+            FileLogger.Log($"Finished.");
+        }
+
+        public static bool hasTokenCodeParam(string[] args)
         {
             var parameterNameAwsToken = $"{nameof(AppSettings.Aws)}:{nameof(AwsSettings.TokenCode)}";
             var isTokenParameterInCommandLine = args.Any(arg => IsCommandArgument(arg, parameterNameAwsToken));
@@ -119,7 +147,7 @@ namespace AwsCredentialManager
 				.UseReactiveUI();
 
 
-        private static string GetExecutingDir()
+        public static string GetExecutingDir()
         {
             return System.AppContext.BaseDirectory ?? Directory.GetCurrentDirectory();
         }

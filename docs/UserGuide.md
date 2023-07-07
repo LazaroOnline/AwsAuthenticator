@@ -81,6 +81,9 @@ If the app is already configured in the `AppSettings.json` file, then you only n
 AwsCredentialManager.exe -Token 123456 
 ```
 
+> Running in command-line generates a log file named `AwsCredentialManager.log` in the same directory as the app,
+> this log is used to debug what the app is doing and to be able to visualize possible error output.
+
 #### CMD: Update AWS credentials
 To further automate the AWS credentials update, once the app is configured with the required fields, 
 you can run this app from the command-line using the argument parameter `-UpdateCreds` 
