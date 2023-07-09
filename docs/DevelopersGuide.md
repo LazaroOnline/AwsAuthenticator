@@ -32,7 +32,6 @@ dotnet new maui
 - Show the countdown timer displaying until when the token is valid (not currently supported by the MFA NuGet library).  
   The countdown is 30 secs, tokens are created at the beginning of each minute from .00 to .30 secs, and from .30 to .00 secs.
   A timer can be implemented to auto-renovate the token at the correct time.
-- Add a button to update the API key in the AWS config file, when it expires after 30 days (depending on aws account policy).
 - Remember the window size and position after re-opening the app.  
 - Hide the MFA Device Generator secret key:  
     Currently it is stored in the `AppSettings.json` file as `MfaGeneratorSecretKey`.  
@@ -44,3 +43,35 @@ dotnet new maui
   * Makecert.exe https://docs.microsoft.com/en-us/previous-versions/dotnet/netframework-2.0/bfsktky3(v=vs.80)
   * SignTool https://docs.microsoft.com/en-gb/windows/win32/seccrypto/signtool
 
+
+
+### Adding automatic "Access-keys" renewal:
+Feature proposal to add a button to update the API key in the AWS config file, 
+when it expires after 30 days (depending on aws account policy).  
+- https://awscli.amazonaws.com/v2/documentation/api/latest/reference/iam/create-access-key.html
+- https://docs.aws.amazon.com/cli/latest/userguide/cli-services-iam-create-creds.html
+```
+aws iam create-access-key
+aws iam create-access-key --user-name your.name@company.com
+```
+
+Response example:
+```json
+{
+    "AccessKey": {
+        "UserName": "personal-aws-cli",
+        "AccessKeyId": "AKIAAAAAAAAAAAAAAAAA",
+        "Status": "Active",
+        "SecretAccessKey": "SOME_EXAMPLE_KEY______________EXAMPLEKEY",
+        "CreateDate": "2023-01-00T00:00:00Z"
+    }
+}
+```
+The problem is that the user needs to have permissions to execute the CLI command 
+`aws iam create-access-key`, even if he has permissions to do so in the AWS web console.
+If no permissions the command returns this error:
+```
+An error occurred (AccessDenied) when calling the CreateAccessKey operation: 
+User: arn:aws:iam::123456789000:user/your.name@company.com is not authorized to perform: iam:CreateAccessKey 
+on resource: user your.name@company.com with an explicit deny in an identity-based policy
+```
