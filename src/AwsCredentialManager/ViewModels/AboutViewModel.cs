@@ -1,49 +1,39 @@
-﻿using System;
-using System.Linq;
-using System.Text;
-using System.Reactive;
-using System.Diagnostics;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using AwsCredentialManager.Utils;
-using AwsCredentialManager.Core.Services;
+﻿using System.Reactive;
 using ReactiveUI;
-using Splat;
 
-namespace AwsCredentialManager.ViewModels
+namespace AwsCredentialManager.ViewModels;
+
+public class AboutViewModel
 {
-	public class AboutViewModel
+
+	private const string URL_LICENSE = "https://opensource.org/licenses/MIT";
+	private const string URL_GITHUB = "https://github.com/LazaroOnline/AwsCredentialManager";
+
+	public string GitVersion { get; set; }
+
+	public ReactiveCommand<Unit, Unit> OnCloseView { get; }
+
+	public AboutViewModel()
 	{
-
-		private const string URL_LICENSE = "https://opensource.org/licenses/MIT";
-		private const string URL_GITHUB = "https://github.com/LazaroOnline/AwsCredentialManager";
-
-		public string GitVersion { get; set; }
-
-		public ReactiveCommand<Unit, Unit> OnCloseView { get; }
-
-		public AboutViewModel()
+		try
 		{
-			try
-			{
-				GitVersion = GitVersionService.GetGitVersionAssemblyInfo().ToString().TrimEnd('\n').TrimEnd('\r');
-			}
-			catch
-			{
-				GitVersion = "";
-            }
-			OnCloseView = ReactiveCommand.Create(() => { });
+			GitVersion = GitVersionService.GetGitVersionAssemblyInfo().ToString().TrimEnd('\n').TrimEnd('\r');
 		}
-
-		public void OpenLinkLicense()
+		catch
 		{
-			Util.OpenUrl(URL_LICENSE);
+			GitVersion = "";
 		}
-
-		public void OpenLinkGitHub()
-		{
-			Util.OpenUrl(URL_GITHUB);
-		}
-
+		OnCloseView = ReactiveCommand.Create(() => { });
 	}
+
+	public void OpenLinkLicense()
+	{
+		Util.OpenUrl(URL_LICENSE);
+	}
+
+	public void OpenLinkGitHub()
+	{
+		Util.OpenUrl(URL_GITHUB);
+	}
+
 }
