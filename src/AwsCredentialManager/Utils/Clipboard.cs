@@ -1,23 +1,16 @@
-﻿namespace AwsCredentialManager;
+﻿using Avalonia.Controls;
+using Avalonia.Threading;
+
+namespace AwsCredentialManager;
 
 public static class Clipboard
 {
-	public static Task SetTextAsync(string text)
+	public static async Task SetTextAsync(string text, Control? control = null)
 	{
-		return GetApp().Clipboard?.SetTextAsync(text) ?? Task.CompletedTask;
-	}
-
-	private static Application GetApp()
-	{
-		if (Application.Current != null)
+		await Dispatcher.UIThread.Invoke(() =>
 		{
-			return Application.Current;
-		}
-		//var appBuilder = AppBuilder.Configure<App>();
-		var appBuilder = AppBuilder.Configure<Avalonia.Application>()
-			.UsePlatformDetect()
-			.SetupWithoutStarting();
-		return appBuilder.Instance;
+			var controlForClipboard = control ?? new Window();
+			return TopLevel.GetTopLevel(controlForClipboard)?.Clipboard?.SetTextAsync(text) ?? Task.CompletedTask;
+		});
 	}
-
 }

@@ -48,6 +48,9 @@ dotnet new maui
 ### Adding automatic "Access-keys" renewal:
 Feature proposal to add a button to update the API key in the AWS config file, 
 when it expires after 30 days (depending on aws account policy).  
+The command `aws iam list-access-keys`can be used to get the `CreateDate` of the keys used in the "default" profile config, 
+and determine if it should update the keys with `aws iam create-access-key`.  
+- https://awscli.amazonaws.com/v2/documentation/api/latest/reference/iam/list-access-keys.html
 - https://awscli.amazonaws.com/v2/documentation/api/latest/reference/iam/create-access-key.html
 - https://docs.aws.amazon.com/cli/latest/userguide/cli-services-iam-create-creds.html
 ```

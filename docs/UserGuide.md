@@ -34,14 +34,16 @@ Editing the following fields, from the selected profile, with the new values fro
 ## Setup this App as your MFA-Device
 
 From the AWS-console, assign a device as MFA token generator by going to top right corner menu: 
-'Security Credentials' > 'Manage MFA device'.  
-You will have to remove any previously assigned device in order to be able to add a new one.  
-Insert the 64 alpha-numeric secret key into the `Authenticator secret key` field 
-to be able to generate the tokens instead of entering the token manually by reading it from another device/phone.
+'Security Credentials' > 'Multi-factor authentication (MFA)' > 'Assign MFA device':
+- In the `Device name` field type your username/email, some companies may only allow you to add a device with a specific name like that.  
+  * You may have to remove your previously assigned device in order to be able to add a new one.  
+- Select `Authenticator app` and click `next`.  
+- Click on `Show secret key` to show the 64 alpha-numeric secret key and copy it to the clipboard.  
+- Insert the 64 alpha-numeric secret key into the `Authenticator secret key` field 
+to be able to generate the tokens instead of entering the token manually by reading it from another device/phone.  
+- You can also scan the QR code to setup an app in your phone like [Microsoft's Authenticator](https://www.microsoft.com/en/security/mobile-authenticator-app).  
 
-> Notice AWS doesn't support managing multiple devices, but even so it is still possible to have multiple MFA generators at the same time.
-The only catch is that removing the Device as MFA will remove all of them.
-See [this request in AWS forum](https://forums.aws.amazon.com/thread.jspa?threadID=137055&start=100&tstart=0).
+> You can setup multiple devices/apps with a single MFA secret, AWS doesn't know what device generated the token.
 
 ![Aws MFA setup window](./AwsMfaSetup.png)
 

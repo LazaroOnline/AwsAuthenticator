@@ -18,7 +18,7 @@ public partial class MainWindow : Window
 		AvaloniaXamlLoader.Load(this);
 	}
 
-	protected override void OnClosing(CancelEventArgs e)
+	protected override void OnClosing(WindowClosingEventArgs e)
 	{
 		base.OnClosing(e);
 		var awsCredentialManagerForm = this.FindControl<AwsCredentialManagerForm>("AwsCredentialManagerForm");
