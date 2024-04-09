@@ -8,33 +8,15 @@ public partial class AwsCredentialManagerForm : UserControl
 	public AwsCredentialManagerForm()
 	{
 		InitializeComponent();
+		AwsProfileSourceOptionsExpander.Click += AwsProfileSourceOptionsExpander_Click;
+		AwsProfileToEditOptionsExpander.Click += AwsProfileToEditOptionsExpander_Click;
 
-		var awsTokenTextBox = this.FindControl<TextBox>("AwsTokenTextBox");
-		if (awsTokenTextBox != null)
+		if (AwsTokenTextBox != null)
 		{
-			awsTokenTextBox.AttachedToVisualTree += (s, e) => awsTokenTextBox.Focus();
+			AwsTokenTextBox.AttachedToVisualTree += (s, e) => AwsTokenTextBox.Focus();
 		}
 	}
 
-	private void InitializeComponent()
-	{
-		AvaloniaXamlLoader.Load(this);
-
-		/*
-		// WIP: show the options dropdown when the AutoCompleteBox gets the focus before typing anything.
-		var autoCompleteAwsProfileToEdit = this.FindControl<AutoCompleteBox>("AutoCompleteAwsProfileToEdit");
-		var autoCompleteAwsProfileSource = this.FindControl<AutoCompleteBox>("AutoCompleteAwsProfileSource");
-
-		autoCompleteAwsProfileToEdit.GotFocus += (sender, e) => {
-			if (!autoCompleteAwsProfileToEdit.IsDropDownOpen)
-				autoCompleteAwsProfileToEdit.IsDropDownOpen = true;
-		};
-		autoCompleteAwsProfileSource.GotFocus += (sender, e) => {
-			if (!autoCompleteAwsProfileSource.IsDropDownOpen)
-				autoCompleteAwsProfileSource.IsDropDownOpen = true;
-		};
-		*/
-	}
 
 	// TODO: try to bind "OnCloseAboutPopup" directly from XAML instead from this code-behind:
 	public void AboutViewExitHandler(object sender, RoutedEventArgs e)
@@ -44,6 +26,16 @@ public partial class AwsCredentialManagerForm : UserControl
 			viewModel.IsAboutVisible = false;
 		}
 		e.Handled = true;
+	}
+
+	private void AwsProfileSourceOptionsExpander_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+	{
+		AutoCompleteBox_AwsProfileSource.IsDropDownOpen = !AutoCompleteBox_AwsProfileSource.IsDropDownOpen;
+	}
+
+	private void AwsProfileToEditOptionsExpander_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+	{
+		AutoCompleteBox_AwsProfileToEdit.IsDropDownOpen = !AutoCompleteBox_AwsProfileToEdit.IsDropDownOpen;
 	}
 
 }

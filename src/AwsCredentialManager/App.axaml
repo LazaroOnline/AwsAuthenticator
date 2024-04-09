@@ -7,6 +7,9 @@
     </Application.DataTemplates>
 
     <Application.Styles>
+        <!--<FluentTheme Mode="Dark"/>
+		https://github.com/AvaloniaUI/Avalonia/wiki/Breaking-Changes#avaloniathemesfluent-and-avaloniathemessimple-themes
+		-->
 		<FluentTheme />
 		<StyleInclude Source="avares://AvaloniaProgressRing/Styles/ProgressRing.xaml"/>
 	</Application.Styles>

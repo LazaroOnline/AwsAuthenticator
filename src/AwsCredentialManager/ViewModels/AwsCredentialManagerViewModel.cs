@@ -24,7 +24,12 @@ public class AwsCredentialManagerViewModel : BaseViewModel
 		set => this.RaiseAndSetIfChanged(ref _awsMfaGeneratorSecretKey, value);
 	}
 
-	public string AwsProfileSource { get; set; } = AwsCredentialsFile.DEFAULT_PROFILE;
+	private string _awsProfileSource = AwsCredentialsFile.DEFAULT_PROFILE;
+	public string AwsProfileSource
+	{
+		get => _awsProfileSource;
+		set => this.RaiseAndSetIfChanged(ref _awsProfileSource, value);
+	}
 
 	private string _awsProfileToEdit = "";
 	public string AwsProfileToEdit
@@ -154,6 +159,15 @@ public class AwsCredentialManagerViewModel : BaseViewModel
 		await UpdateCredentialsCommand();
 	}
 
+	public void AwsProfileSourceClearCommand()
+	{
+		AwsProfileSource = "";
+	}
+
+	public async Task AwsProfileToEditClearCommand()
+	{
+		AwsProfileToEdit = "";
+	}
 
 	public async Task GenerateTokenCommand()
 	{
