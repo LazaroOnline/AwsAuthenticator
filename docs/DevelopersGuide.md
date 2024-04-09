@@ -3,8 +3,8 @@
 
 ## Requirements
 - [Aws CLI](https://aws.amazon.com/cli/).
-- [Dotnet 6 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/6.0).
-- Visual Studio 2019 or higher.
+- [Dotnet 8 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/8.0).
+- Visual Studio 2022 or higher.
 - Visual Studio [add-on for Avalonia UI](https://marketplace.visualstudio.com/items?itemName=AvaloniaTeam.AvaloniaVS).
 
 
