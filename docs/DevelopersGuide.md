@@ -21,10 +21,12 @@ dotnet new maui
 
 ## Future work
 - Rename the project to something like one of these names:
+  - `AWS Authenticator`
+  - `AWS MFA Authenticator`
+  - `AWS-MFA`
   - `PC-MFA`
   - `AutoMfa`
   - `AwsAutoMfa`
-  - `AwsAuthenticator`
   - `PcAuthenticator`
   - `PcMultiFactorAuthenticator`
 - Show how long since last updated AWS credentials, monitor the file.
