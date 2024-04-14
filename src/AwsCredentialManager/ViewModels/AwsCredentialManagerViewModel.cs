@@ -169,6 +169,11 @@ public class AwsCredentialManagerViewModel : BaseViewModel
 		AwsProfileToEdit = "";
 	}
 
+	public async Task AwsTokenCodeClearCommand()
+	{
+		AwsTokenCode = "";
+	}
+
 	public async Task GenerateTokenCommand()
 	{
 		// This command is fast, it could run synchronously if required.
