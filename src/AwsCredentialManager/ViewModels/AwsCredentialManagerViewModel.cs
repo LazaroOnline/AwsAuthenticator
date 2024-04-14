@@ -118,7 +118,7 @@ public class AwsCredentialManagerViewModel : BaseViewModel
 		AwsMfaGeneratorSecretKey = awsSettings?.MfaGeneratorSecretKey ?? "";
 		AwsTokenCode = awsSettings?.TokenCode ?? "";
 
-		AwsLocalProfileList = _awsCredentialManager.GetAwsLocalProfileList();
+		AwsLocalProfileList = _awsCredentialManager?.GetAwsLocalProfileList();
 
 		this.WhenAnyValue(x => x.AwsMfaGeneratorSecretKey).Subscribe(x => {
 			this.IsValidAwsMfaGeneratorSecretKey = GetIsValidAwsMfaGeneratorSecretKey();
