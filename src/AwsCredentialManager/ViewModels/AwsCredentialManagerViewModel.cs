@@ -241,6 +241,12 @@ public class AwsCredentialManagerViewModel : BaseViewModel
 		_awsCredentialManager.OpenAwsCredentialsFile();
 	}
 
+	private const string AwsUserSecurityCredentialsWebPage = "https://console.aws.amazon.com/iam/home#/security_credentials?section=IAM_credentials";
+	public void OpenAwsUserSecurityCredentialsWebPageCommand()
+	{
+		AwsUserSecurityCredentialsWebPage.TryOpenUrlInBrowser();
+	}
+
 	public void ReadAwsCurrentProfileName()
 	{
 		AwsCurrentProfileName = _awsCredentialManager.AwsGetCurrentUserProfile();
