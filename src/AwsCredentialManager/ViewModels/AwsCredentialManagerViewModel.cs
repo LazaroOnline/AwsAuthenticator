@@ -1,6 +1,8 @@
 using System.Reactive;
 using ReactiveUI;
 using Splat;
+using System.DirectoryServices.AccountManagement;
+
 
 namespace AwsCredentialManager.ViewModels;
 
@@ -112,11 +114,15 @@ public class AwsCredentialManagerViewModel : BaseViewModel
 		//_appSettingsWriter = appSettingsWriter ?? new AppSettingsWriter();
 
 		AwsAccountId = awsSettings?.AccountId ?? "";
-		AwsUserName = awsSettings?.UserName ?? ""; // ?? Utils.UserInfo.GetUserFullName
+		AwsUserName = awsSettings?.UserName ?? "";
 		AwsProfileSource = awsSettings?.ProfileSource ?? "";
 		AwsProfileToEdit = awsSettings?.Profile ?? "";
 		AwsMfaGeneratorSecretKey = awsSettings?.MfaGeneratorSecretKey ?? "";
 		AwsTokenCode = awsSettings?.TokenCode ?? "";
+
+		if (string.IsNullOrEmpty(AwsUserName)) {
+			AwsUserName = UserInfo.GetUserFullName();
+		}
 
 		AwsLocalProfileList = _awsCredentialManager?.GetAwsLocalProfileList();
 
