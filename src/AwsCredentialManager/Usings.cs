@@ -9,5 +9,6 @@ global using Avalonia.Controls.Templates;
 global using AwsCredentialManager.Utils;
 global using AwsCredentialManager.Views;
 global using AwsCredentialManager.ViewModels;
+global using AwsCredentialManager.Core;
 global using AwsCredentialManager.Core.Models;
 global using AwsCredentialManager.Core.Services;
