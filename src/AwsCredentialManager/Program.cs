@@ -1,15 +1,7 @@
-using System;
 using System.IO;
-using System.Linq;
-using System.Collections.Generic;
 using Splat;
-using Avalonia;
 using Avalonia.ReactiveUI;
-using Avalonia.Controls.ApplicationLifetimes;
 using Microsoft.Extensions.Configuration;
-using AwsCredentialManager.Core.Services;
-using AwsCredentialManager.ViewModels;
-using AwsCredentialManager.Core;
 
 namespace AwsCredentialManager;
 
@@ -111,7 +103,6 @@ public class Program
 			}, nameof(AppCommand.UpdateCreds)).Wait();
 			return;
 		}
-
 		BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
 	}
 

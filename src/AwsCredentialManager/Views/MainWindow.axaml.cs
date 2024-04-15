@@ -1,4 +1,3 @@
-using System.ComponentModel;
 using Avalonia.Markup.Xaml;
 
 namespace AwsCredentialManager.Views;
@@ -8,9 +7,10 @@ public partial class MainWindow : Window
 	public MainWindow()
 	{
 		InitializeComponent();
-	#if DEBUG
+#if DEBUG
 		this.AttachDevTools();
-	#endif
+#endif
+		StateTracker.TrackWindow(this);
 	}
 
 	private void InitializeComponent()
