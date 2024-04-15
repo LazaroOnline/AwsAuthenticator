@@ -8,7 +8,8 @@ public static class WindowStateTracker
 	public static void TrackWindow(Window window)
 	{
 		var initialPosition = window.Position;
-		var trackerNamespace = string.Join("_", window.Screens.All.Select(s => s.WorkingArea.Size.ToString()));
+		var trackerNamespace = string.Join("_", window.Screens.All.Select(s => 
+			$"{s.WorkingArea.Size.Width}x{s.WorkingArea.Size.Height}"));
 		trackerNamespace += "__" + Environment.ProcessPath?.Replace("/", "_").Replace("\\", "_");
 		Tracker.Configure<Window>()
 			.Id(w => w.Name, trackerNamespace)
@@ -20,9 +21,10 @@ public static class WindowStateTracker
 		if (window.WindowState == WindowState.Minimized)
 		{
 			window.WindowState = WindowState.Normal;
-		}
-		if (window.Position.X < 0 || window.Position.Y < 0)
-		{
+
+			// When the window was closed while being minimized,
+			// the position is lost and what is stored are negative values off the screen
+			// (example: {-31993, -32000}).
 			window.Position = initialPosition;
 		}
 	}
