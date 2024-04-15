@@ -7,6 +7,7 @@ public static class WindowStateTracker
 
 	public static void TrackWindow(Window window)
 	{
+		var initialPosition = window.Position;
 		var trackerNamespace = string.Join("_", window.Screens.All.Select(s => s.WorkingArea.Size.ToString()));
 		trackerNamespace += "__" + Environment.ProcessPath?.Replace("/", "_").Replace("\\", "_");
 		Tracker.Configure<Window>()
@@ -15,5 +16,14 @@ public static class WindowStateTracker
 			.PersistOn(nameof(Window.Closing))
 			.StopTrackingOn(nameof(Window.Closing));
 		Tracker.Track(window);
+
+		if (window.WindowState == WindowState.Minimized)
+		{
+			window.WindowState = WindowState.Normal;
+		}
+		if (window.Position.X < 0 || window.Position.Y < 0)
+		{
+			window.Position = initialPosition;
+		}
 	}
 }
