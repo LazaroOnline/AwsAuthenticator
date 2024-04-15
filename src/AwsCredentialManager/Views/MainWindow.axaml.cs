@@ -10,7 +10,7 @@ public partial class MainWindow : Window
 #if DEBUG
 		this.AttachDevTools();
 #endif
-		StateTracker.TrackWindow(this);
+		WindowStateTracker.TrackWindow(this);
 	}
 
 	private void InitializeComponent()
