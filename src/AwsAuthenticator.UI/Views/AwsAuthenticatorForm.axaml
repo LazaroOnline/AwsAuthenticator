@@ -221,7 +221,7 @@
 
 		<TextBox Grid.Row="13" Grid.ColumnSpan="7" VerticalAlignment="Center"
 			Text="{Binding Logs}" IsReadOnly="True" IsVisible="{Binding !IsLogEmpty}"
-			BorderThickness="0" Background="Transparent" VerticalContentAlignment="Top" Padding="10,6,32,5"
+			BorderThickness="0" Background="Transparent" VerticalContentAlignment="Top" Padding="10,6,32,5" Margin="0,0,0,33"
 			ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
 
 		<Button Grid.Row="13" Grid.Column="6" Command="{Binding ClearLogsCommand}" ToolTip.Tip="Clear log"
