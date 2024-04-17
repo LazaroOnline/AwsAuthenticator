@@ -11,6 +11,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="TaskScheduler" Version="2.10.1" />
     <PackageReference Include="TwoStepsAuthenticator.NetCore" Version="1.0.0" />
   </ItemGroup>
 

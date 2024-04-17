@@ -231,6 +231,18 @@
 		</Button>
 
 		<Button Grid.Row="13" Grid.Column="6"
+				Command="{Binding AddToTaskSchedulerCommand}"
+				VerticalAlignment="Bottom" HorizontalAlignment="Right"
+				Padding="2" Margin="0,0,40,0"
+				ToolTip.Tip="Add a daily task to update the AWS-CLI token to Windows TaskScheduler.">
+			<Panel>
+				<TextBlock FontSize="18" VerticalAlignment="Top" HorizontalAlignment="Center">
+					🕗
+				</TextBlock>
+			</Panel>
+		</Button>
+
+		<Button Grid.Row="13" Grid.Column="6"
 				Command="{Binding OnOpenAboutWindow}"
 				VerticalAlignment="Bottom" HorizontalAlignment="Right"
 				Padding="2"

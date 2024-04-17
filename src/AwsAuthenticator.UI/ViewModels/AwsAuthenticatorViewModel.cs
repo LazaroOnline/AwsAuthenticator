@@ -1,14 +1,13 @@
 using System.Reactive;
 using ReactiveUI;
 using Splat;
-using System.DirectoryServices.AccountManagement;
-
 
 namespace AwsAuthenticator.ViewModels;
 
 public class AwsAuthenticatorViewModel : BaseViewModel
 {
 	private readonly IAwsAuthenticator _awsAuthenticator;
+	private readonly ITaskSchedulerService _taskSchedulerService;
 	private readonly AppSettingsWriter _appSettingsWriter;
 
 	#region Properties
@@ -102,15 +101,18 @@ public class AwsAuthenticatorViewModel : BaseViewModel
 
 	public AwsAuthenticatorViewModel(
 		 IAwsAuthenticator? awsAuthenticator
+		, ITaskSchedulerService? taskSchedulerService = null
 		,AppSettingsWriter? appSettingsWriter = null
 		,AwsSettings? awsSettings = null
 	)
 	{
 		_awsAuthenticator = awsAuthenticator ?? Splat.Locator.Current.GetService<IAwsAuthenticator>();
+		_taskSchedulerService = taskSchedulerService ?? Splat.Locator.Current.GetService<ITaskSchedulerService>();
 		_appSettingsWriter = appSettingsWriter ?? Splat.Locator.Current.GetService<AppSettingsWriter>();
 		awsSettings = awsSettings ?? Splat.Locator.Current.GetService<AwsSettings>();
 
 		//_awsAuthenticator = awsAuthenticator ?? new Core.AwsAuthenticator();
+		//_taskSchedulerService = taskSchedulerService ?? new Core.TaskSchedulerService();
 		//_appSettingsWriter = appSettingsWriter ?? new AppSettingsWriter();
 
 		AwsAccountId = awsSettings?.AccountId ?? "";
@@ -245,6 +247,11 @@ public class AwsAuthenticatorViewModel : BaseViewModel
 			_awsAuthenticator.UpdateAwsAccount(AwsAccountId, AwsUserName, AwsTokenCode, AwsProfileSource, profileToEdit);
 			Logs = $"Updated credentials successfully at {DateTime.Now.ToString(DATE_FORMAT)}.";
 		});
+	}
+
+	public async Task AddToTaskSchedulerCommand()
+	{
+		_taskSchedulerService?.AddDailyTask();
 	}
 
 	public void OpenAwsCredentialsFileCommand()

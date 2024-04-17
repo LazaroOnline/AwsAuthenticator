@@ -160,6 +160,7 @@ public class Program
 		services.Register<AppSettings>(() => config.Get<AppSettings>() ?? new AppSettings());
 		services.Register<AppSettingsWriter>(() => new AppSettingsWriter());
 		services.Register<IAwsCredentialUpdater>(() => new Core.Services.AwsCredentialUpdaterCmd());
+		services.Register<ITaskSchedulerService>(() => new Core.Services.TaskSchedulerService());
 		services.Register<IAwsAuthenticator>(() => new Core.Services.AwsAuthenticator());
 		services.Register<AwsSettings>(() => appSettings.Aws);
 		services.Register<AwsAuthenticatorViewModel>(() => new AwsAuthenticatorViewModel());
