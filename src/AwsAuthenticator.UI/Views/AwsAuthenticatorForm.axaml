@@ -43,7 +43,7 @@
 
 		<!-- https://github.com/Deadpikle/AvaloniaProgressRing -->
 		<progRing:ProgressRing IsActive="{Binding IsLoading}"
-			Grid.Row="7"
+			Grid.Row="12"
 			Grid.RowSpan="1"
 			Grid.Column="0"
 			Grid.ColumnSpan="7"
@@ -221,12 +221,12 @@
 
 		<TextBox Grid.Row="13" Grid.ColumnSpan="7" VerticalAlignment="Center"
 			Text="{Binding Logs}" IsReadOnly="True" IsVisible="{Binding !IsLogEmpty}"
-			BorderThickness="0" Background="Transparent" VerticalContentAlignment="Top"
+			BorderThickness="0" Background="Transparent" VerticalContentAlignment="Top" Padding="10,6,32,5"
 			ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
 
 		<Button Grid.Row="13" Grid.Column="6" Command="{Binding ClearLogsCommand}" ToolTip.Tip="Clear log"
 			IsVisible="{Binding !IsLogEmpty}" 
-			Margin="0, 2" Padding="6, 1" VerticalAlignment="Top" HorizontalAlignment="Right">
+			Margin="2" Padding="6,4,6,4" VerticalAlignment="Top" HorizontalAlignment="Right">
 			✕
 		</Button>
 
@@ -236,7 +236,7 @@
 				Padding="2"
 				ToolTip.Tip="Open 'About' info dialog">
 			<Panel>
-				<TextBlock FontSize="14" VerticalAlignment="Top" HorizontalAlignment="Center">
+				<TextBlock FontSize="18" VerticalAlignment="Top" HorizontalAlignment="Center">
 					ℹ️
 				</TextBlock>
 			</Panel>
