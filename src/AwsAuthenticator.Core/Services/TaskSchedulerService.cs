@@ -3,11 +3,28 @@
 namespace AwsAuthenticator.Core.Services;
 
 public interface ITaskSchedulerService {
+	public bool ExistsDailyTask();
 	public void AddDailyTask();
 }
 
 public class TaskSchedulerService : ITaskSchedulerService
 {
+	public const string DailyTaskName = "AwsAuthenticator-AutoTask";
+
+	public bool ExistsDailyTask()
+	{
+		using TaskService taskService = new();
+		var task = taskService.GetTask(DailyTaskName);
+		return task != null;
+	}
+
+	public bool ExistsTask(string taskName)
+	{
+		using TaskService taskService = new();
+		var task = taskService.GetTask(taskName);
+		return task != null;
+	}
+
 	public void AddDailyTask()
 	{
 		// Running twice is idempotent, it overrides any task that has the same task name.
@@ -35,8 +52,7 @@ public class TaskSchedulerService : ITaskSchedulerService
 		task.Settings.AllowDemandStart = true;
 		task.Settings.StartWhenAvailable = true;
 
-		var taskName = "AwsAuthenticator-AutoTask";
-		taskService.RootFolder.RegisterTaskDefinition(taskName, task);
+		taskService.RootFolder.RegisterTaskDefinition(DailyTaskName, task);
 		//ts.RootFolder.DeleteTask(taskName);
 	}
 }

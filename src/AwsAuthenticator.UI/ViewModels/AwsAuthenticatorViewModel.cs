@@ -94,7 +94,7 @@ public class AwsAuthenticatorViewModel : BaseViewModel
 
 	// Constructor required by the designer tools.
 	public AwsAuthenticatorViewModel()
-		: this(null, null, null) // Call the other constructor
+		: this(null, null, null, null) // Call the other constructor
 	{
 		System.Diagnostics.Debug.WriteLine($"Default constructor used for {nameof(AwsAuthenticatorViewModel)}.");
 	}
@@ -251,7 +251,12 @@ public class AwsAuthenticatorViewModel : BaseViewModel
 
 	public async Task AddToTaskSchedulerCommand()
 	{
+		await ExecuteAsyncWithLoadingAndExceptionLogging(() => {
+			var alreadyExist = _taskSchedulerService?.ExistsDailyTask() ?? false;
+			Logs = $"{(alreadyExist ? "Overwritting" : "Creating new")} Windows Task-Scheduler task '{TaskSchedulerService.DailyTaskName}'";
 		_taskSchedulerService?.AddDailyTask();
+			Logs += $" done.";
+		});
 	}
 
 	public void OpenAwsCredentialsFileCommand()
