@@ -34,7 +34,6 @@ dotnet new maui
 - Show the countdown timer displaying until when the token is valid (not currently supported by the MFA NuGet library).  
   The countdown is 30 secs, tokens are created at the beginning of each minute from .00 to .30 secs, and from .30 to .00 secs.
   A timer can be implemented to auto-renovate the token at the correct time.
-- Remember the window size and position after re-opening the app.  
 - Hide the MFA Device Generator secret key:  
     Currently it is stored in the `AppSettings.json` file as `MfaGeneratorSecretKey`.  
     Maybe it would be better secured using some kind of Windows-Credentials-Manager API, 
