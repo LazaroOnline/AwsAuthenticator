@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "AwsAuthenticator": {
+      "commandName": "Project",
+      //"commandLineArgs": ""
+      //"commandLineArgs": "-CopyToken"
+      //"commandLineArgs": "-UpdateCreds"
+      //"commandLineArgs": "--Aws.TokenCode 123456"
+      "commandLineArgs": ""
+    }
+  }
+}

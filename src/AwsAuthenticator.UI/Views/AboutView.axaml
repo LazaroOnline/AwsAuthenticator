@@ -1,0 +1,60 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 mc:Ignorable="d" d:DesignWidth="390" d:DesignHeight="360"
+			 x:Class="AwsAuthenticator.Views.AboutView">
+
+	<UserControl.Styles>
+		<Style Selector="Button.DialogButton">
+			<Setter Property="Margin" Value="3"/>
+			<Setter Property="Height" Value="40"/>
+			<Setter Property="Width" Value="90"/>
+			<Setter Property="HorizontalContentAlignment" Value="Center"/>
+			<Setter Property="VerticalContentAlignment" Value="Center"/>
+		</Style>
+
+		<Style Selector="Button.DialogButtonLink">
+			<Setter Property="Background" Value="Transparent"/>
+			<Setter Property="BorderThickness" Value="0"/>
+			<Setter Property="Cursor" Value="Hand"/>
+			<Setter Property="Foreground" Value="{DynamicResource SystemAccentColor}"/>
+		</Style>
+	</UserControl.Styles>
+	
+	<Grid RowDefinitions="*">
+		<Border Grid.Row="0" Background="{DynamicResource SystemRegionColor}"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+		<Border Grid.Row="0" Background="#111" Opacity="0.3"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+		<StackPanel Grid.Row="0" Margin="5" VerticalAlignment="Center">
+
+			<TextBlock TextAlignment="Center" Text="About AwsAuthenticator" Margin="0,0,0,8" FontSize="18"/>
+			
+			<Image Source="/Assets/Icon.ico" Width="120" Margin="0,-25,0,-20"/>
+
+			<TextBlock TextAlignment="Center">
+				Developed by A. Lazaro, 2021.
+			</TextBlock>
+			
+			<TextBlock TextAlignment="Center" Text="{Binding GitVersion}" />
+
+			<StackPanel Margin="5" Orientation="Horizontal" HorizontalAlignment="Center">
+				
+				<Button Command="{Binding OpenLinkLicense}" Classes="DialogButton DialogButtonLink">
+					MIT License
+				</Button>
+				
+				<Button Command="{Binding OpenLinkGitHub}" Classes="DialogButton DialogButtonLink">
+					GitHub
+				</Button>
+				
+				<Button Command="{Binding OnCloseView}" Classes="DialogButton" FontSize="18" Padding="0,-2,0,0" >
+					OK
+				</Button>
+				
+			</StackPanel>
+		</StackPanel>
+	</Grid>
+
+
+
+	</UserControl>

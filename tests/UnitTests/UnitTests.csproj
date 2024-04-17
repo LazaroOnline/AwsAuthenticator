@@ -6,9 +6,9 @@
 
     <IsPackable>false</IsPackable>
 
-    <AssemblyName>AwsCredentialManager.UnitTests</AssemblyName>
+    <AssemblyName>AwsAuthenticator.UnitTests</AssemblyName>
 
-    <RootNamespace>AwsCredentialManager.UnitTests</RootNamespace>
+    <RootNamespace>AwsAuthenticator.UnitTests</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -27,8 +27,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\AwsCredentialManager.Core\AwsCredentialManager.Core.csproj" />
-    <ProjectReference Include="..\..\src\AwsCredentialManager\AwsCredentialManager.csproj" />
+    <ProjectReference Include="..\..\src\AwsAuthenticator.Core\AwsAuthenticator.Core.csproj" />
+    <ProjectReference Include="..\..\src\AwsAuthenticator.UI\AwsAuthenticator.UI.csproj" />
   </ItemGroup>
 
 </Project>

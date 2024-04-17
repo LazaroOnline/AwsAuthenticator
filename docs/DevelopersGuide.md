@@ -20,15 +20,6 @@ dotnet new maui
 ```
 
 ## Future work
-- Rename the project to something like one of these names:
-  - `AWS Authenticator`
-  - `AWS MFA Authenticator`
-  - `AWS-MFA`
-  - `PC-MFA`
-  - `AutoMfa`
-  - `AwsAutoMfa`
-  - `PcAuthenticator`
-  - `PcMultiFactorAuthenticator`
 - Show how long since last updated AWS credentials, monitor the file.
 - Add a button to configure the automatic run of this program from Windows Tasks.
 - Show the countdown timer displaying until when the token is valid (not currently supported by the MFA NuGet library).  

@@ -7,9 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using AwsCredentialManager.Core.Services;
+using AwsAuthenticator.Core.Services;
 
-namespace AwsCredentialManager.UnitTests.Core.Services
+namespace AwsAuthenticator.UnitTests.Core.Services
 {
 	public class CurrentAppTests
 	{

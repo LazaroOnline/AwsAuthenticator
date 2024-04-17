@@ -1,0 +1,14 @@
+﻿global using System;
+global using System.Linq;
+global using System.Text;
+global using System.Threading.Tasks;
+global using System.Collections.Generic;
+global using Avalonia;
+global using Avalonia.Controls;
+global using Avalonia.Controls.Templates;
+global using AwsAuthenticator.Utils;
+global using AwsAuthenticator.Views;
+global using AwsAuthenticator.ViewModels;
+global using AwsAuthenticator.Core;
+global using AwsAuthenticator.Core.Models;
+global using AwsAuthenticator.Core.Services;
