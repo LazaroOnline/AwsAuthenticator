@@ -121,7 +121,7 @@
 				ToolTip.Tip="Account Id, you can get it from the aws-console webpage from the top right corner menu."/>
 
 		<Button Grid.Row="4" Grid.Column="4" Grid.RowSpan="3"
-				Command="{Binding OpenAwsCredentialsFileCommand}"
+				Command="{Binding OpenAwsUserSecurityCredentialsWebPageCommand}"
 				VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
 				Padding="4" Margin="0"
 				ToolTip.Tip="Open AWS user security configuration url, where you can get the account id and user name.">
