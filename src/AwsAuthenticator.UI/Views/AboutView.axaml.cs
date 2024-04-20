@@ -1,10 +1,5 @@
-using System;
-using System.ComponentModel;
-using Avalonia;
-using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.Interactivity;
-using AwsAuthenticator.ViewModels;
 
 namespace AwsAuthenticator.Views
 {
@@ -26,14 +21,6 @@ namespace AwsAuthenticator.Views
 		public AboutView(AboutViewModel? viewModel)
 		{
 			this.InitializeComponent();
-			var dataContextViewModel = viewModel ?? new AboutViewModel();
-
-			dataContextViewModel.OnCloseView.Subscribe(x => {
-				var eventArgs = new RoutedEventArgs { RoutedEvent = ExitViewEvent, Source = this };
-				this.RaiseEvent(eventArgs);
-
-			});
-			this.DataContext = dataContextViewModel;
 		}
 
 		private void InitializeComponent()
@@ -41,5 +28,9 @@ namespace AwsAuthenticator.Views
 			AvaloniaXamlLoader.Load(this);
 		}
 
+		public void CloseDialog(object sender, RoutedEventArgs args)
+		{
+			this.IsVisible = false;
+		}
 	}
 }

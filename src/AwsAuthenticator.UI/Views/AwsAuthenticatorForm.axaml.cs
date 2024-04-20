@@ -1,5 +1,4 @@
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
 
 namespace AwsAuthenticator.Views;
 
@@ -17,17 +16,6 @@ public partial class AwsAuthenticatorForm : UserControl
 		}
 	}
 
-
-	// TODO: try to bind "OnCloseAboutPopup" directly from XAML instead from this code-behind:
-	public void AboutViewExitHandler(object sender, RoutedEventArgs e)
-	{
-		var viewModel = (AwsAuthenticatorViewModel?)this.DataContext;
-		if (viewModel != null) {
-			viewModel.IsAboutVisible = false;
-		}
-		e.Handled = true;
-	}
-
 	private void AwsProfileSourceOptionsExpander_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
 	{
 		AutoCompleteBox_AwsProfileSource.IsDropDownOpen = !AutoCompleteBox_AwsProfileSource.IsDropDownOpen;
@@ -38,4 +26,8 @@ public partial class AwsAuthenticatorForm : UserControl
 		AutoCompleteBox_AwsProfileToEdit.IsDropDownOpen = !AutoCompleteBox_AwsProfileToEdit.IsDropDownOpen;
 	}
 
+	public void OpenAboutDialog(object sender, RoutedEventArgs args)
+	{
+		this.AboutViewDialog.IsVisible = true;
+	}
 }

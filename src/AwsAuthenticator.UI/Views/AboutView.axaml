@@ -47,14 +47,11 @@
 					GitHub
 				</Button>
 				
-				<Button Command="{Binding OnCloseView}" Classes="DialogButton" FontSize="18" Padding="0,-2,0,0" >
+				<Button Click="CloseDialog" IsDefault="True" Classes="DialogButton" FontSize="18" Padding="0,-2,0,0" >
 					OK
 				</Button>
 				
 			</StackPanel>
 		</StackPanel>
 	</Grid>
-
-
-
-	</UserControl>
+</UserControl>

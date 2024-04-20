@@ -1,17 +1,11 @@
-﻿using System.Reactive;
-using ReactiveUI;
+﻿namespace AwsAuthenticator.ViewModels;
 
-namespace AwsAuthenticator.ViewModels;
-
-public class AboutViewModel
+public class AboutViewModel : BaseViewModel
 {
-
 	private const string URL_LICENSE = "https://opensource.org/licenses/MIT";
 	private const string URL_GITHUB = "https://github.com/LazaroOnline/AwsAuthenticator";
 
 	public string GitVersion { get; set; }
-
-	public ReactiveCommand<Unit, Unit> OnCloseView { get; }
 
 	public AboutViewModel()
 	{
@@ -23,7 +17,6 @@ public class AboutViewModel
 		{
 			GitVersion = "";
 		}
-		OnCloseView = ReactiveCommand.Create(() => { });
 	}
 
 	public void OpenLinkLicense()
@@ -35,5 +28,4 @@ public class AboutViewModel
 	{
 		Util.OpenUrl(URL_GITHUB);
 	}
-
 }

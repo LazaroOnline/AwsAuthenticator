@@ -243,7 +243,7 @@
 		</Button>
 
 		<Button Grid.Row="13" Grid.Column="6"
-				Command="{Binding OnOpenAboutWindow}"
+				Click="OpenAboutDialog"
 				VerticalAlignment="Bottom" HorizontalAlignment="Right"
 				Padding="2"
 				ToolTip.Tip="Open 'About' info dialog">
@@ -254,10 +254,9 @@
 			</Panel>
 		</Button>
 
-
 		<views:AboutView
-			IsVisible="{Binding $parent.DataContext.IsAboutVisible}"
-			ExitView="AboutViewExitHandler"
+			IsVisible="False"
+			x:Name="AboutViewDialog"
 			Grid.ColumnSpan="7"
 			Grid.RowSpan="13"
 		/>
