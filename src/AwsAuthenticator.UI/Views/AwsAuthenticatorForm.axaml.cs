@@ -19,11 +19,13 @@ public partial class AwsAuthenticatorForm : UserControl
 	private void AwsProfileSourceOptionsExpander_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
 	{
 		AutoCompleteBox_AwsProfileSource.IsDropDownOpen = !AutoCompleteBox_AwsProfileSource.IsDropDownOpen;
+		AutoCompleteBox_AwsProfileSource.Focus();
 	}
 
 	private void AwsProfileToEditOptionsExpander_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
 	{
 		AutoCompleteBox_AwsProfileToEdit.IsDropDownOpen = !AutoCompleteBox_AwsProfileToEdit.IsDropDownOpen;
+		AutoCompleteBox_AwsProfileToEdit.Focus();
 	}
 
 	public void OpenAboutDialog(object sender, RoutedEventArgs args)
