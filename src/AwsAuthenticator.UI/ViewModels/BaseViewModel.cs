@@ -1,5 +1,5 @@
 ﻿using System.Threading;
-using ReactiveUI;
+using Avalonia.Media;
 
 namespace AwsAuthenticator.ViewModels;
 
@@ -19,6 +19,13 @@ public class BaseViewModel : ReactiveObject
 	{
 		get => _logs;
 		set => this.RaiseAndSetIfChanged(ref _logs, value);
+	}
+
+	private IBrush _logsColor = Brushes.Blue;
+	public IBrush LogsColor
+	{
+		get => _logsColor;
+		set => this.RaiseAndSetIfChanged(ref _logsColor, value);
 	}
 
 	private bool _isLogEmpty;
@@ -58,6 +65,7 @@ public class BaseViewModel : ReactiveObject
 		}
 		catch (Exception ex)
 		{
+			LogsColorSetError();
 			Logs = $"ERROR: {DateTime.Now.ToString("yyy-M-d HH:mm:ss")} {ex}";
 		}
 	}
@@ -70,6 +78,7 @@ public class BaseViewModel : ReactiveObject
 		}
 		catch (Exception ex)
 		{
+			LogsColorSetError();
 			Logs = $"ERROR: {DateTime.Now.ToString("yyy-M-d HH:mm:ss")} {ex}";
 		}
 	}
@@ -114,4 +123,14 @@ public class BaseViewModel : ReactiveObject
 		Logs = "";
 	}
 
+	// Colors should be readable with dark and light backgrounds:
+	private readonly IBrush ColorSuccess = new SolidColorBrush(new Color(255, 0, 181, 55));
+	private readonly IBrush ColorInfo = Brushes.SteelBlue;
+	private readonly IBrush ColorWarning = Brushes.Goldenrod;
+	private readonly IBrush ColorError = Brushes.Red;
+
+	public void LogsColorSetSuccess() => LogsColor = ColorSuccess;
+	public void LogsColorSetInfo() => LogsColor = ColorInfo;
+	public void LogsColorSetWarning() => LogsColor = ColorWarning;
+	public void LogsColorSetError() => LogsColor = ColorError;
 }

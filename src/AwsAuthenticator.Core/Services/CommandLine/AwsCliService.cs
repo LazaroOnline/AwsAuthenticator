@@ -15,9 +15,10 @@ public class AwsCliService
 		}
 		catch (Exception ex)
 		{
-			throw new FailToGetCredentialsException("Check the token is valid, if Aws cli is installed, and if your account is properly configured in AWS."
-				+ "\r\nThe command: \r\n  " + command
-				+ "\r\nReturned: '" + resultJson + "'.", ex);
+			throw new FailToGetCredentialsException(
+				// "Check the token is valid, if Aws cli is installed, and if your account is properly configured in AWS.\r\n" +
+				"The command: \r\n  " + command +
+				"\r\nReturned: \r\n" + resultJson + "", ex);
 		}
 	}
 

@@ -1,5 +1,4 @@
-using System.Reactive;
-using ReactiveUI;
+using System.Text.RegularExpressions;
 using Splat;
 
 namespace AwsAuthenticator.ViewModels;
@@ -19,7 +18,7 @@ public partial class AwsAuthenticatorViewModel : BaseViewModel
 
 	public AwsAuthenticatorViewModel(
 		 IAwsAuthenticator? awsAuthenticator
-		, ITaskSchedulerService? taskSchedulerService = null
+		,ITaskSchedulerService? taskSchedulerService = null
 		,AppSettingsWriter? appSettingsWriter = null
 		,AwsSettings? awsSettings = null
 	)
@@ -59,12 +58,6 @@ public partial class AwsAuthenticatorViewModel : BaseViewModel
 		});
 	}
 
-	public bool GetIsValidAwsMfaGeneratorSecretKey() =>
-		!string.IsNullOrWhiteSpace(AwsMfaGeneratorSecretKey)
-		// Length validation removed to allow using the MFA generator for other providers.
-		//&& AwsMfaGeneratorSecretKey.Length == Core.Services.AwsAuthenticator.MFA_DEVICE_GENERATOR_SECRET_KEY_LENGTH
-		;
-
 	public bool GetIsEnabledGenerateTokenButton() =>
 		IsValidAwsMfaGeneratorSecretKey && !IsLoading;
 
@@ -99,7 +92,11 @@ public partial class AwsAuthenticatorViewModel : BaseViewModel
 		// WithExceptionLogging(async () => {
 		await ExecuteAsyncWithLoadingAndExceptionLogging(() => {
 			AwsTokenCode = GenerateTokenFromAuthenticatorKey();
-			Logs = $"CODE: {DateTime.Now.ToString(DATE_FORMAT)}:  {AwsTokenCode}";
+			if (!string.IsNullOrEmpty(AwsTokenCode))
+			{
+				LogsColorSetInfo();
+				Logs = $"TOKEN-CODE GENERATED: {AwsTokenCode}    ({DateTime.Now.ToString(DATE_FORMAT)})";
+			}
 		});
 	}
 
@@ -134,9 +131,137 @@ public partial class AwsAuthenticatorViewModel : BaseViewModel
 
 	public string GenerateTokenFromAuthenticatorKey(string mfaGeneratorSecretKey)
 	{
+		var validationErrors = ValidateMfaGeneratorSecretKey(mfaGeneratorSecretKey);
+		if (validationErrors.Any())
+		{
+			LogsColorSetWarning();
+			Logs = "Validation error:\r\n" + string.Join("\r\n", validationErrors);
+			return "";
+		}
 		var authenticator = new TwoStepsAuthenticator.TimeAuthenticator();
 		var tokenCode = authenticator.GetCode(mfaGeneratorSecretKey);
 		return tokenCode;
+	}
+
+	public bool GetIsValidAwsMfaGeneratorSecretKey() => !ValidateMfaGeneratorSecretKey().Any();
+
+	public IList<string> ValidateMfaGeneratorSecretKey() => ValidateMfaGeneratorSecretKey(AwsMfaGeneratorSecretKey);
+
+	public IList<string> ValidateMfaGeneratorSecretKey(string? mfaSecretKey)
+	{
+		var errors = new List<string>();
+
+		var fieldName = "Authenticator secret key";
+
+		if (string.IsNullOrWhiteSpace(mfaSecretKey))
+		{
+			return [$"'{fieldName}' is empty."];
+		}
+
+		/*
+		// Length validation removed to allow using the MFA generator for other providers.
+		if (mfaSecretKey.Length != Core.Services.AwsAuthenticator.MFA_DEVICE_GENERATOR_SECRET_KEY_LENGTH)
+		{
+			return [$"'{fieldName}' length was {mfaSecretKey.Length}, length should be {Core.Services.AwsAuthenticator.MFA_DEVICE_GENERATOR_SECRET_KEY_LENGTH}."];
+		}
+		*/
+
+		try
+		{
+			// Test the Base32 encoder required during token generation:
+			// https://github.com/glacasa/TwoStepsAuthenticator/blob/main/TwoStepsAuthenticator/Authenticator.cs#L10
+			var key = TwoStepsAuthenticator.Base32Encoding.ToBytes(mfaSecretKey);
+		}
+		catch (ArgumentException ex)
+		{
+			if (ex.Message.Contains("Character is not a Base32 character"))
+			{
+				errors.Add($"Invalid '{fieldName}'. It should be a Base32 set of characters.");
+			}
+		}
+		catch (Exception ex)
+		{
+			errors.Add($"Invalid '{fieldName}'. Failed converting to Base32.\r\n{ex.GetType()}: {ex.Message}");
+		}
+		return errors;
+	}
+
+	public IList<string> ValidateTokenAws() => ValidateTokenAws(AwsTokenCode);
+
+	public IList<string> ValidateTokenAws(string? token)
+	{
+		var fieldName = "TokenCode";
+		if (string.IsNullOrWhiteSpace(token))
+		{
+			return [$"{fieldName} is empty."];
+		}
+		if (token.Length < Core.Services.AwsAuthenticator.TOKEN_AWS_MIN_LENGTH)
+		{
+			return [$"Invalid length for parameter {fieldName}, value: {token.Length}, valid min length: {Core.Services.AwsAuthenticator.TOKEN_AWS_MIN_LENGTH}."];
+		}
+		return [];
+	}
+
+	public IList<string> ValidateAwsAccountId() => ValidateAwsAccountId(AwsAccountId);
+
+	public IList<string> ValidateAwsAccountId(string? awsAccountId)
+	{
+		var fieldName = "Aws Account Id";
+		if (string.IsNullOrWhiteSpace(awsAccountId))
+		{
+			return [$"The field '{fieldName}' is required."];
+		}
+		if (awsAccountId.Length != Core.Services.AwsAuthenticator.AWS_ACCOUNT_ID_LENGTH)
+		{
+			return [$"Invalid length for parameter {fieldName}, value: {awsAccountId.Length}, valid length: {Core.Services.AwsAuthenticator.AWS_ACCOUNT_ID_LENGTH}."];
+		}
+
+		var awsAccountIdValidationRegeex = new Regex(@"^\d{12}$");
+		var isValidPattern = awsAccountIdValidationRegeex.IsMatch(awsAccountId);
+		if (!isValidPattern)
+		{
+			return [$"The field '{fieldName}' must be a 12 digits number."];
+		}
+
+		return [];
+	}
+
+	public IList<string> ValidateAwsUserName() => ValidateAwsUserName(AwsUserName);
+
+	public IList<string> ValidateAwsUserName(string? awsUserName)
+	{
+		var fieldName = "Aws User Name";
+		if (string.IsNullOrWhiteSpace(awsUserName))
+		{
+			return [$"The field '{fieldName}' is required."];
+		}
+		return [];
+	}
+
+	public IList<string> ValidateUpdateCredentialsCommand()
+	{
+		var errors = new List<string>();
+
+		var hasEmptyToken = string.IsNullOrWhiteSpace(AwsTokenCode);
+
+		if (hasEmptyToken)
+		{
+			var errorsInMfaGeneratorSecretKey = ValidateMfaGeneratorSecretKey();
+			errors.AddRange(errorsInMfaGeneratorSecretKey);
+		}
+		else
+		{
+			var errorsInTokenCode = ValidateTokenAws();
+			errors.AddRange(errorsInTokenCode);
+		}
+
+		var errorsInAwsAccountId = ValidateAwsAccountId();
+		errors.AddRange(errorsInAwsAccountId);
+
+		var errorsInAwsUserName = ValidateAwsUserName();
+		errors.AddRange(errorsInAwsUserName);
+
+		return errors;
 	}
 
 	public string GetAwsProfileToEdit()
@@ -147,16 +272,31 @@ public partial class AwsAuthenticatorViewModel : BaseViewModel
 	public async Task UpdateCredentialsCommand()
 	{
 		await ExecuteAsyncWithLoadingAndExceptionLogging(() => {
+			var validationErrors = ValidateUpdateCredentialsCommand();
+			if (validationErrors.Any()) {
+				LogsColorSetWarning();
+				Logs = "Validation error:\r\n" + string.Join("\r\n", validationErrors);
+				return;
+			}
 			var hasEmptyToken = string.IsNullOrWhiteSpace(AwsTokenCode);
 			if (hasEmptyToken && IsValidAwsMfaGeneratorSecretKey)
 			{
 				AwsTokenCode = GenerateTokenFromAuthenticatorKey();
 			}
+			LogsColorSetInfo();
 			Logs = "Updating...";
 			// System.Threading.Thread.Sleep(6000); // Use this line for testing the loading spinner.
 			var profileToEdit = GetAwsProfileToEdit();
-			_awsAuthenticator.UpdateAwsAccount(AwsAccountId, AwsUserName, AwsTokenCode, AwsProfileSource, profileToEdit);
-			Logs = $"Updated credentials successfully at {DateTime.Now.ToString(DATE_FORMAT)}.";
+			try
+			{
+				_awsAuthenticator.UpdateAwsAccount(AwsAccountId, AwsUserName, AwsTokenCode, AwsProfileSource, profileToEdit);
+				LogsColorSetSuccess();
+				Logs = $"Updated credentials successfully at {DateTime.Now.ToString(DATE_FORMAT)}.";
+			}
+			catch (FailToGetCredentialsException ex) {
+				LogsColorSetError();
+				Logs = $"ERROR UPDATING CREDENTIALS ({DateTime.Now.ToString(DATE_FORMAT)})\r\n{ex.Message}";
+			}
 		});
 	}
 
@@ -164,8 +304,9 @@ public partial class AwsAuthenticatorViewModel : BaseViewModel
 	{
 		await ExecuteAsyncWithLoadingAndExceptionLogging(() => {
 			var alreadyExist = _taskSchedulerService?.ExistsDailyTask() ?? false;
+			LogsColorSetInfo();
 			Logs = $"{(alreadyExist ? "Overwritting" : "Creating new")} Windows Task-Scheduler task '{TaskSchedulerService.DailyTaskName}'";
-		_taskSchedulerService?.AddDailyTask();
+			_taskSchedulerService?.AddDailyTask();
 			Logs += $" done.";
 		});
 	}
@@ -201,5 +342,4 @@ public partial class AwsAuthenticatorViewModel : BaseViewModel
 		};
 		_appSettingsWriter.Save(newAppSettings);
 	}
-
 }

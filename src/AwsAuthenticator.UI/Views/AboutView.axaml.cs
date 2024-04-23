@@ -21,6 +21,8 @@ namespace AwsAuthenticator.Views
 		public AboutView(AboutViewModel? viewModel)
 		{
 			this.InitializeComponent();
+			var dataContextViewModel = viewModel ?? new AboutViewModel();
+			this.DataContext = dataContextViewModel;
 		}
 
 		private void InitializeComponent()

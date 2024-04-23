@@ -16,6 +16,8 @@ public class AwsAuthenticator : IAwsAuthenticator
 	// For example GitHub's MFA secret key is shorter with 16 alphanumeric characters.
 	/// <summary>Length of the alpha-numeric secret key used by AWS to link a device as MFA token generator.</summary>
 	public const int MFA_DEVICE_GENERATOR_SECRET_KEY_LENGTH = 64;
+	public const int TOKEN_AWS_MIN_LENGTH = 6;
+	public const int AWS_ACCOUNT_ID_LENGTH = 12;
 
 	private readonly IAwsCredentialUpdater _awsCredentialUpdater;
 	private readonly AwsCliService _awsCliService;
