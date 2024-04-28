@@ -102,6 +102,7 @@
 					📋
 				</TextBlock>
 			</Button>
+			<ProgressBar Grid.Column="0" VerticalAlignment="Bottom" Height="6" Value="{Binding TokenTimeLeftPercentage}" Padding="3,0"/>
 		</Grid>
 
 		<Button Grid.Row="2" Grid.Column="4" Grid.ColumnSpan="3"

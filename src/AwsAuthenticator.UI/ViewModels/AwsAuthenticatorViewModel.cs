@@ -55,6 +55,7 @@ public partial class AwsAuthenticatorViewModel : BaseViewModel
 
 		this.WhenAnyValue(x => x.AwsTokenCode).Subscribe(x => {
 			this.HasAwsTokenCode = !GetIsAwsTokenCodeEmpty();
+			ClearTokenExpiration();
 		});
 	}
 
@@ -91,7 +92,7 @@ public partial class AwsAuthenticatorViewModel : BaseViewModel
 		// This command is fast, it could run synchronously if required.
 		// WithExceptionLogging(async () => {
 		await ExecuteAsyncWithLoadingAndExceptionLogging(() => {
-			AwsTokenCode = GenerateTokenFromAuthenticatorKey();
+			SetGeneratedTokenFromAuthenticatorKey();
 			if (!string.IsNullOrEmpty(AwsTokenCode))
 			{
 				LogsColorSetInfo();
@@ -111,7 +112,7 @@ public partial class AwsAuthenticatorViewModel : BaseViewModel
 
 	public async Task GenerateTokenAndCopyToClipboardCommand()
 	{
-		AwsTokenCode = GenerateTokenFromAuthenticatorKey();
+		SetGeneratedTokenFromAuthenticatorKey();
 		var isValidToken = !string.IsNullOrWhiteSpace(AwsTokenCode);
 		if (isValidToken) {
 			// https://docs.avaloniaui.net/docs/input/clipboard
@@ -122,6 +123,21 @@ public partial class AwsAuthenticatorViewModel : BaseViewModel
 			// Show the errors from the logs:
 			await Clipboard.SetTextAsync(Logs);
 		}
+	}
+
+	public async Task SetGeneratedTokenFromAuthenticatorKey(bool keepRegeneratingTokens = false)
+	{
+		do
+		{
+			AwsTokenCode = GenerateTokenFromAuthenticatorKey();
+			SetTokenExpiration();
+			var refreshExpirationTask = RefreshTokenExpirationInfoUntilExpires();
+			if (keepRegeneratingTokens)
+			{
+				await refreshExpirationTask;
+			}
+		}
+		while (keepRegeneratingTokens);
 	}
 
 	public string GenerateTokenFromAuthenticatorKey()
@@ -141,6 +157,46 @@ public partial class AwsAuthenticatorViewModel : BaseViewModel
 		var authenticator = new TwoStepsAuthenticator.TimeAuthenticator();
 		var tokenCode = authenticator.GetCode(mfaGeneratorSecretKey);
 		return tokenCode;
+	}
+
+	public void SetTokenExpiration()
+	{
+		this.TokenExpirationTime = _awsAuthenticator.GetNextTokenExpirationTime();
+	}
+
+	public async Task RefreshTokenExpirationInfoUntilExpires()
+	{
+		do
+		{
+			RefreshTokenExpirationInfo();
+			if (TokenSecondsToExpire != null)
+			{
+				await Task.Delay(1000);
+			}
+		}
+		while (TokenSecondsToExpire != null);
+		Console.WriteLine("Refresh ended");
+	}
+
+	public void RefreshTokenExpirationInfo()
+	{
+		var utcNow = DateTime.UtcNow;
+		if (TokenExpirationTime != null && TokenExpirationTime > utcNow)
+		{
+			this.TokenSecondsToExpire = (TokenExpirationTime.Value - utcNow).Seconds;
+			this.TokenTimeLeftPercentage = 100 * (TokenSecondsToExpire.Value / 30);
+		}
+		else
+		{
+			ClearTokenExpiration();
+		}
+	}
+
+	public void ClearTokenExpiration()
+	{
+		this.TokenExpirationTime = null;
+		this.TokenSecondsToExpire = null;
+		this.TokenTimeLeftPercentage = 0;
 	}
 
 	public bool GetIsValidAwsMfaGeneratorSecretKey() => !ValidateMfaGeneratorSecretKey().Any();
@@ -166,8 +222,8 @@ public partial class AwsAuthenticatorViewModel : BaseViewModel
 		}
 		*/
 
-		try
-		{
+			try
+			{
 			// Test the Base32 encoder required during token generation:
 			// https://github.com/glacasa/TwoStepsAuthenticator/blob/main/TwoStepsAuthenticator/Authenticator.cs#L10
 			var key = TwoStepsAuthenticator.Base32Encoding.ToBytes(mfaSecretKey);
@@ -281,7 +337,7 @@ public partial class AwsAuthenticatorViewModel : BaseViewModel
 			var hasEmptyToken = string.IsNullOrWhiteSpace(AwsTokenCode);
 			if (hasEmptyToken && IsValidAwsMfaGeneratorSecretKey)
 			{
-				AwsTokenCode = GenerateTokenFromAuthenticatorKey();
+				SetGeneratedTokenFromAuthenticatorKey();
 			}
 			LogsColorSetInfo();
 			Logs = "Updating...";

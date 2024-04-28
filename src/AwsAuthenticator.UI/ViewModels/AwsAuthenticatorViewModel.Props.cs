@@ -69,4 +69,25 @@ public partial class AwsAuthenticatorViewModel : BaseViewModel
 		get => _hasAwsTokenCode;
 		set => this.RaiseAndSetIfChanged(ref _hasAwsTokenCode, value);
 	}
+
+	private DateTime? _tokenExpirationTime;
+	public DateTime? TokenExpirationTime
+	{
+		get => _tokenExpirationTime;
+		set => this.RaiseAndSetIfChanged(ref _tokenExpirationTime, value);
+	}
+
+	private double? _tokenSecondsToExpire;
+	public double? TokenSecondsToExpire
+	{
+		get => _tokenSecondsToExpire;
+		set => this.RaiseAndSetIfChanged(ref _tokenSecondsToExpire, value);
+	}
+
+	private double _tokenTimeLeftPercentage;
+	public double TokenTimeLeftPercentage
+	{
+		get => _tokenTimeLeftPercentage;
+		set => this.RaiseAndSetIfChanged(ref _tokenTimeLeftPercentage, value);
+	}
 }

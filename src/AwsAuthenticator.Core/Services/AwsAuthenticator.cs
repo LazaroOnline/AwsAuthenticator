@@ -8,6 +8,7 @@ public interface IAwsAuthenticator
 	void UpdateAwsAccount(string awsAccountId, string awsPersonalAccountName, string tokenCode, string awsProfileSource, string awsProfileToEdit);
 	string AwsGetCurrentUserProfile(); // TODO: remove this method from this interface.
 	List<string> GetAwsLocalProfileList();
+	DateTime GetNextTokenExpirationTime();
 }
 
 public class AwsAuthenticator : IAwsAuthenticator
@@ -76,6 +77,20 @@ public class AwsAuthenticator : IAwsAuthenticator
 		finally {
 			// Reset the AWS profile to the value it had before this operation.
 			_awsCliService.ChangeProfile(currentAwsProfile, envVarLevel);
+		}
+	}
+
+	public DateTime GetNextTokenExpirationTime()
+	{
+		var now = DateTime.UtcNow;
+		var isMinutesFirstHalf = now.Second < 30;
+		if (isMinutesFirstHalf)
+		{
+			return now.AddSeconds(30 - now.Second);
+		}
+		else
+		{
+			return now.AddSeconds(60 - now.Second);
 		}
 	}
 
