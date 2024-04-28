@@ -25,14 +25,10 @@ public partial class AwsAuthenticatorViewModel : BaseViewModel
 		,AwsSettings? awsSettings = null
 	)
 	{
-		_awsAuthenticator = awsAuthenticator ?? Splat.Locator.Current.GetService<IAwsAuthenticator>();
-		_taskSchedulerService = taskSchedulerService ?? Splat.Locator.Current.GetService<ITaskSchedulerService>();
-		_appSettingsWriter = appSettingsWriter ?? Splat.Locator.Current.GetService<AppSettingsWriter>();
+		_awsAuthenticator = awsAuthenticator ?? Splat.Locator.Current.GetService<IAwsAuthenticator>() ?? new Core.Services.AwsAuthenticator();
+		_taskSchedulerService = taskSchedulerService ?? Splat.Locator.Current.GetService<ITaskSchedulerService>() ?? new Core.Services.TaskSchedulerService();
+		_appSettingsWriter = appSettingsWriter ?? Splat.Locator.Current.GetService<AppSettingsWriter>() ?? new AppSettingsWriter();
 		awsSettings = awsSettings ?? Splat.Locator.Current.GetService<AwsSettings>();
-
-		//_awsAuthenticator = awsAuthenticator ?? new Core.AwsAuthenticator();
-		//_taskSchedulerService = taskSchedulerService ?? new Core.TaskSchedulerService();
-		//_appSettingsWriter = appSettingsWriter ?? new AppSettingsWriter();
 
 		AwsAccountId = awsSettings?.AccountId ?? "";
 		AwsUserName = awsSettings?.UserName ?? "";
@@ -49,7 +45,7 @@ public partial class AwsAuthenticatorViewModel : BaseViewModel
 			AwsUserName = UserInfo.GetUserFullName();
 		}
 
-		AwsLocalProfileList = _awsAuthenticator?.GetAwsLocalProfileList();
+		AwsLocalProfileList = _awsAuthenticator?.GetAwsLocalProfileList() ?? [];
 
 		this.WhenAnyValue(x => x.AwsMfaGeneratorSecretKey).Subscribe(x => {
 			this.IsValidAwsMfaGeneratorSecretKey = GetIsValidAwsMfaGeneratorSecretKey();
@@ -83,12 +79,12 @@ public partial class AwsAuthenticatorViewModel : BaseViewModel
 		AwsProfileSource = "";
 	}
 
-	public async Task AwsProfileToEditClearCommand()
+	public void AwsProfileToEditClearCommand()
 	{
 		AwsProfileToEdit = "";
 	}
 
-	public async Task AwsTokenCodeClearCommand()
+	public void AwsTokenCodeClearCommand()
 	{
 		AwsTokenCode = "";
 	}
@@ -98,7 +94,7 @@ public partial class AwsAuthenticatorViewModel : BaseViewModel
 		// This command is fast, it could run synchronously if required.
 		// WithExceptionLogging(async () => {
 		await ExecuteAsyncWithLoadingAndExceptionLogging(() => {
-			SetGeneratedTokenFromAuthenticatorKey();
+			_ = SetGeneratedTokenFromAuthenticatorKey();
 			if (!string.IsNullOrEmpty(AwsTokenCode))
 			{
 				LogsColorSetInfo();
@@ -118,7 +114,7 @@ public partial class AwsAuthenticatorViewModel : BaseViewModel
 
 	public async Task GenerateTokenAndCopyToClipboardCommand()
 	{
-		SetGeneratedTokenFromAuthenticatorKey();
+		await SetGeneratedTokenFromAuthenticatorKey(false);
 		var isValidToken = !string.IsNullOrWhiteSpace(AwsTokenCode);
 		if (isValidToken) {
 			// https://docs.avaloniaui.net/docs/input/clipboard
@@ -333,7 +329,7 @@ public partial class AwsAuthenticatorViewModel : BaseViewModel
 
 	public async Task UpdateCredentialsCommand()
 	{
-		await ExecuteAsyncWithLoadingAndExceptionLogging(() => {
+		await ExecuteAsyncWithLoadingAndExceptionLogging(async () => {
 			var validationErrors = ValidateUpdateCredentialsCommand();
 			if (validationErrors.Any()) {
 				LogsColorSetWarning();
@@ -343,7 +339,7 @@ public partial class AwsAuthenticatorViewModel : BaseViewModel
 			var hasEmptyToken = string.IsNullOrWhiteSpace(AwsTokenCode);
 			if (hasEmptyToken && IsValidAwsMfaGeneratorSecretKey)
 			{
-				SetGeneratedTokenFromAuthenticatorKey();
+				await SetGeneratedTokenFromAuthenticatorKey(false);
 			}
 			LogsColorSetInfo();
 			Logs = "Updating...";
@@ -362,7 +358,7 @@ public partial class AwsAuthenticatorViewModel : BaseViewModel
 			RefreshAwsCredentialsFileLastWriteTime();
 		});
 	}
-	
+
 	public void RefreshAwsCredentialsFileLastWriteTime()
 	{
 		try {
@@ -383,14 +379,23 @@ public partial class AwsAuthenticatorViewModel : BaseViewModel
 		}
 	}
 
+	// System.Threading.Timer()
+	private System.Timers.Timer ConstantRefreshAwsCredentialsFileLastWriteMessageTimer = new System.Timers.Timer();
 	public async Task ConstantRefreshAwsCredentialsFileLastWriteMessage()
 	{
-		do
-		{
+		RefreshAwsCredentialsFileLastWriteMessage();
+		var timer = ConstantRefreshAwsCredentialsFileLastWriteMessageTimer;
+		var timeToNextRefresh = CalculateTimeToNextRefreshAwsCredentialsFileLastWriteMessage();
+		timer.Interval = timeToNextRefresh.TotalMilliseconds;
+		timer.AutoReset = true;
+		timer.Enabled = true;
+		timer.Elapsed += (sender, args) => {
 			RefreshAwsCredentialsFileLastWriteMessage();
 			var timeToNextRefresh = CalculateTimeToNextRefreshAwsCredentialsFileLastWriteMessage();
-			await Task.Delay(timeToNextRefresh);
-		} while (true);
+			timer.Interval = timeToNextRefresh.TotalMilliseconds;
+			Console.WriteLine($"Refreshed AwsCredentials File LastWrite Message, next refresh in: {timeToNextRefresh}");
+		};
+		timer.Start();
 	}
 
 	public TimeSpan CalculateTimeToNextRefreshAwsCredentialsFileLastWriteMessage()
@@ -432,6 +437,7 @@ public partial class AwsAuthenticatorViewModel : BaseViewModel
 	{
 		// if (e.ChangeType == WatcherChangeTypes.Changed)
 		RefreshAwsCredentialsFileLastWriteTime();
+		ConstantRefreshAwsCredentialsFileLastWriteMessage();
 	}
 
 	public async Task AddToTaskSchedulerCommand()
@@ -454,11 +460,6 @@ public partial class AwsAuthenticatorViewModel : BaseViewModel
 	public void OpenAwsUserSecurityCredentialsWebPageCommand()
 	{
 		AwsUserSecurityCredentialsWebPage.TryOpenUrlInBrowser();
-	}
-
-	public void ReadAwsCurrentProfileName()
-	{
-		AwsCurrentProfileName = _awsAuthenticator.AwsGetCurrentUserProfile();
 	}
 
 	public void SaveConfig()

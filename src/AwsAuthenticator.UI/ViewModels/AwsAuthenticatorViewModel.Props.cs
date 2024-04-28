@@ -47,7 +47,6 @@ public partial class AwsAuthenticatorViewModel : BaseViewModel
 		set => this.RaiseAndSetIfChanged(ref _awsLocalProfileList, value);
 	}
 
-	public string AwsCurrentProfileName { get; set; } = "";
 
 	private bool _isValidAwsMfaGeneratorSecretKey;
 	public bool IsValidAwsMfaGeneratorSecretKey

@@ -6,7 +6,6 @@ public interface IAwsAuthenticator
 {
 	void OpenAwsCredentialsFile();
 	void UpdateAwsAccount(string awsAccountId, string awsPersonalAccountName, string tokenCode, string awsProfileSource, string awsProfileToEdit);
-	string AwsGetCurrentUserProfile(); // TODO: remove this method from this interface.
 	List<string> GetAwsLocalProfileList();
 	DateTime GetNextTokenExpirationTime();
 }
@@ -92,10 +91,5 @@ public class AwsAuthenticator : IAwsAuthenticator
 		{
 			return now.AddSeconds(60 - now.Second);
 		}
-	}
-
-	public string AwsGetCurrentUserProfile()
-	{
-		return _awsCliService.GetProfile();
 	}
 }
