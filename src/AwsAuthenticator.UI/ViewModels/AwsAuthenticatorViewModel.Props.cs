@@ -90,4 +90,19 @@ public partial class AwsAuthenticatorViewModel : BaseViewModel
 		get => _tokenTimeLeftPercentage;
 		set => this.RaiseAndSetIfChanged(ref _tokenTimeLeftPercentage, value);
 	}
+
+	private DateTime? _awsCredentialsFileLastWriteTime;
+	public DateTime? AwsCredentialsFileLastWriteTime
+	{
+		get => _awsCredentialsFileLastWriteTime;
+		set => this.RaiseAndSetIfChanged(ref _awsCredentialsFileLastWriteTime, value);
+	}
+
+	private string _awsCredentialsFileLastWriteMessage = "";
+	public string AwsCredentialsFileLastWriteMessage
+	{
+		get => _awsCredentialsFileLastWriteMessage;
+		set => this.RaiseAndSetIfChanged(ref _awsCredentialsFileLastWriteMessage, value);
+	}
+
 }

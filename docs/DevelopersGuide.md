@@ -20,7 +20,6 @@ dotnet new maui
 ```
 
 ## Future work
-- Show how long since last updated AWS credentials, monitor the file.
 - Add option to auto-renovate the displayed token-code constantly as it expires every 30 seconds.
 - Hide the MFA Device Generator secret key:  
     Currently it is stored in the `AppSettings.json` file as `MfaGeneratorSecretKey`.  

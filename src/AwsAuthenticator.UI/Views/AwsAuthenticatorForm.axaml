@@ -209,6 +209,7 @@
 		<Button Grid.Row="4" Grid.Column="6" Grid.RowSpan="7" Command="{Binding UpdateCredentialsCommand}"
 				IsEnabled="{Binding !IsLoading}" IsDefault="True"
 				VerticalAlignment="Stretch" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+				ToolTip.Tip="{Binding AwsCredentialsFileLastWriteMessage}"
 				Padding="4,33" Margin="0" Width="70">
 			<Panel>
 				<TextBlock FontSize="35" VerticalAlignment="Top" HorizontalAlignment="Center">

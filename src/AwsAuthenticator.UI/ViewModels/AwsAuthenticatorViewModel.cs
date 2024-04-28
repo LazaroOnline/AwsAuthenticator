@@ -1,4 +1,6 @@
+using System.IO;
 using System.Text.RegularExpressions;
+using Humanizer;
 using Splat;
 
 namespace AwsAuthenticator.ViewModels;
@@ -38,6 +40,10 @@ public partial class AwsAuthenticatorViewModel : BaseViewModel
 		AwsProfileToEdit = awsSettings?.Profile ?? "";
 		AwsMfaGeneratorSecretKey = awsSettings?.MfaGeneratorSecretKey ?? "";
 		AwsTokenCode = awsSettings?.TokenCode ?? "";
+
+		RefreshAwsCredentialsFileLastWriteTime();
+		SetWatcherForAwsCredentialsFileLastWriteTime();
+		_ = ConstantRefreshAwsCredentialsFileLastWriteMessage();
 
 		if (string.IsNullOrEmpty(AwsUserName)) {
 			AwsUserName = UserInfo.GetUserFullName();
@@ -353,7 +359,79 @@ public partial class AwsAuthenticatorViewModel : BaseViewModel
 				LogsColorSetError();
 				Logs = $"ERROR UPDATING CREDENTIALS ({DateTime.Now.ToString(DATE_FORMAT)})\r\n{ex.Message}";
 			}
+			RefreshAwsCredentialsFileLastWriteTime();
 		});
+	}
+	
+	public void RefreshAwsCredentialsFileLastWriteTime()
+	{
+		try {
+			AwsCredentialsFileLastWriteTime = File.GetLastWriteTimeUtc(AwsCredentialsFile.FilePath);
+		} catch {
+			AwsCredentialsFileLastWriteTime = null;
+		}
+		RefreshAwsCredentialsFileLastWriteMessage();
+	}
+
+	public void RefreshAwsCredentialsFileLastWriteMessage()
+	{
+		if (AwsCredentialsFileLastWriteTime == null) {
+			AwsCredentialsFileLastWriteMessage = "";
+		} else {
+			var timeSinceLastWrite = DateTime.UtcNow - AwsCredentialsFileLastWriteTime;
+			AwsCredentialsFileLastWriteMessage = $"Aws credentials file last updated:\r\n{AwsCredentialsFileLastWriteTime?.ToLocalTime().ToString("yyy-M-d HH:mm")}\r\n{timeSinceLastWrite?.Humanize()} ago.";
+		}
+	}
+
+	public async Task ConstantRefreshAwsCredentialsFileLastWriteMessage()
+	{
+		do
+		{
+			RefreshAwsCredentialsFileLastWriteMessage();
+			var timeToNextRefresh = CalculateTimeToNextRefreshAwsCredentialsFileLastWriteMessage();
+			await Task.Delay(timeToNextRefresh);
+		} while (true);
+	}
+
+	public TimeSpan CalculateTimeToNextRefreshAwsCredentialsFileLastWriteMessage()
+	{
+		var timeSinceLastWrite = DateTime.UtcNow - AwsCredentialsFileLastWriteTime;
+		if (timeSinceLastWrite < TimeSpan.FromMinutes(1)) { return TimeSpan.FromSeconds(1); }
+		if (timeSinceLastWrite < TimeSpan.FromHours(1)) { return TimeSpan.FromMinutes(1); }
+		if (timeSinceLastWrite < TimeSpan.FromDays(1)) { return TimeSpan.FromHours(1); }
+		return TimeSpan.FromDays(1);
+	}
+
+	private FileSystemWatcher? watcher;
+
+	public void SetWatcherForAwsCredentialsFileLastWriteTime()
+	{
+		try
+		{
+			// https://learn.microsoft.com/en-us/dotnet/api/system.io.filesystemwatcher?view=net-8.0
+			var filePath = AwsCredentialsFile.FilePath;
+			watcher = new FileSystemWatcher();
+			var fileDir = Path.GetDirectoryName(filePath);
+			var fileName = Path.GetFileName(filePath);
+			watcher.Path = fileDir ?? "";
+			watcher.Filter = fileName;
+			watcher.IncludeSubdirectories = false;
+			watcher.EnableRaisingEvents = true;
+			watcher.NotifyFilter = NotifyFilters.LastWrite;
+			watcher.Changed += OnChangedAwsCredentialsFile;
+			// watcher.Changed += (_, __) => RefreshAwsCredentialsFileLastWriteTime();
+		}
+		catch (Exception ex)
+		{
+			// Could not watch the file.
+			Console.WriteLine($"Could not set file watcher for: {AwsCredentialsFile.FilePath} \r\n{ex}");
+		}
+	}
+
+	private void OnChangedAwsCredentialsFile(object sender, FileSystemEventArgs e)
+	{
+		// if (e.ChangeType == WatcherChangeTypes.Changed)
+		RefreshAwsCredentialsFileLastWriteTime();
 	}
 
 	public async Task AddToTaskSchedulerCommand()
