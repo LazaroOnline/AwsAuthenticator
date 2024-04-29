@@ -6,14 +6,14 @@
     <UserSecretsId>55cfacdc-d0ba-4010-9256-28551c2b9e61</UserSecretsId>
     <RootNamespace>AwsAuthenticator</RootNamespace>
     <AssemblyName>AwsAuthenticator</AssemblyName>
-    <ApplicationIcon>Icon.ico</ApplicationIcon>
+    <ApplicationIcon>App.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <AvaloniaResource Include="Assets\**" />
     <None Remove=".gitignore" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Icon.ico" />
+    <Content Include="App.ico" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\.editorconfig" Link=".editorconfig" />

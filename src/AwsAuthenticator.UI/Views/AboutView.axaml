@@ -29,7 +29,7 @@
 
 			<TextBlock TextAlignment="Center" Text="About AwsAuthenticator" Margin="0,0,0,8" FontSize="18"/>
 			
-			<Image Source="/Assets/Icon.ico" Width="120" Margin="0,-25,0,-20"/>
+			<Image Source="/Assets/App.ico" Width="120" Margin="0,-12,0,0"/>
 
 			<TextBlock TextAlignment="Center">
 				Developed by A. Lazaro, 2021.
