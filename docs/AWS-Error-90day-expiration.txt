@@ -1,0 +1,37 @@
+
+
+AWS AUTHENTICATOR LOG EXAMPLE WHEN ACCESS ID EXPIRES AFTER 90 DAYS:
+
+ERROR: 2024-4-19 10:23:14 AwsAuthenticator.Core.Models.FailToGetCredentialsException: Check the token is valid, if Aws cli is installed, and if your account is properly configured in AWS.
+The command: 
+  set AWS_PROFILE=default&& aws sts get-session-token --duration-seconds 129600 --serial-number "arn:aws:iam::123456789012:mfa/your.name@company.com" --token-code 123456
+Returned: '
+An error occurred (InvalidClientTokenId) when calling the GetSessionToken operation: The security token included in the request is invalid.
+'.
+ ---> System.Text.Json.JsonException: 'A' is an invalid start of a value. Path: $ | LineNumber: 1 | BytePositionInLine: 0.
+ ---> System.Text.Json.JsonReaderException: 'A' is an invalid start of a value. LineNumber: 1 | BytePositionInLine: 0.
+   at System.Text.Json.ThrowHelper.ThrowJsonReaderException(Utf8JsonReader& json, ExceptionResource resource, Byte nextByte, ReadOnlySpan`1 bytes)
+   at System.Text.Json.Utf8JsonReader.ConsumeValue(Byte marker)
+   at System.Text.Json.Utf8JsonReader.ReadFirstToken(Byte first)
+   at System.Text.Json.Utf8JsonReader.ReadSingleSegment()
+   at System.Text.Json.Utf8JsonReader.Read()
+   at System.Text.Json.Serialization.JsonConverter`1.ReadCore(Utf8JsonReader& reader, JsonSerializerOptions options, ReadStack& state)
+   --- End of inner exception stack trace ---
+   at System.Text.Json.ThrowHelper.ReThrowWithPath(ReadStack& state, JsonReaderException ex)
+   at System.Text.Json.Serialization.JsonConverter`1.ReadCore(Utf8JsonReader& reader, JsonSerializerOptions options, ReadStack& state)
+   at System.Text.Json.JsonSerializer.ReadFromSpan[TValue](ReadOnlySpan`1 utf8Json, JsonTypeInfo`1 jsonTypeInfo, Nullable`1 actualByteCount)
+   at System.Text.Json.JsonSerializer.ReadFromSpan[TValue](ReadOnlySpan`1 json, JsonTypeInfo`1 jsonTypeInfo)
+   at System.Text.Json.JsonSerializer.Deserialize[TValue](String json, JsonSerializerOptions options)
+   at AwsAuthenticator.Core.Services.AwsCliService.GetToken(String awsAccountId, String awsPersonalAccountName, String tokenCode, String awsProfileToEdit)
+   --- End of inner exception stack trace ---
+   at AwsAuthenticator.Core.Services.AwsCliService.GetToken(String awsAccountId, String awsPersonalAccountName, String tokenCode, String awsProfileToEdit)
+   at AwsAuthenticator.Core.Services.AwsAuthenticator.AwsGetToken(String awsAccountId, String awsPersonalAccountName, String tokenCode, String awsProfileSource)
+   at AwsAuthenticator.Core.Services.AwsAuthenticator.UpdateAwsAccount(String awsAccountId, String awsPersonalAccountName, String tokenCode, String awsProfileSource, String awsProfileToEdit)
+   at AwsAuthenticator.ViewModels.AwsAuthenticatorViewModel.<UpdateCredentialsCommand>b__76_0()
+   at AwsAuthenticator.ViewModels.BaseViewModel.<>c__DisplayClass20_0.<ExecuteAsync>b__0(Object arg)
+   at System.Threading.ExecutionContext.RunFromThreadPoolDispatchLoop(Thread threadPoolThread, ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location ---
+   at System.Threading.ExecutionContext.RunFromThreadPoolDispatchLoop(Thread threadPoolThread, ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location ---
+   at AwsAuthenticator.ViewModels.BaseViewModel.WithExceptionLogging(Func`1 action)
