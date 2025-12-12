@@ -23,7 +23,20 @@ public class GitVersionAssemblyInfo
 		//	+ $@"{nameof(ModificationDate)}: {GetModificationDate}{Environment.NewLine}"
 			+ $@"{nameof(Version)}: {Version}{Environment.NewLine}"
 			+ $@"{nameof(FileVersion)}: {FileVersion}{Environment.NewLine}"
-			+ $@"{nameof(InformationalVersion)}: {InformationalVersion}"
+			+ $@"{nameof(InformationalVersion)}: {Environment.NewLine}{ToMultilineInformationalVersion(InformationalVersion)}" // This last line can grow a lot, split the label with a new line.
 			;
+	}
+
+	public string ToShortString()
+	{
+		return $@"{nameof(Version)}: {Version}{Environment.NewLine}{ToMultilineInformationalVersion(InformationalVersion)}";
+	}
+
+	public const string GitVersionPendingPrefix = "--pending-"; // Same as defined in the "GitVersion.yml" file.
+
+	public static string ToMultilineInformationalVersion(string informationalVersion)
+	{
+		return informationalVersion.Replace(GitVersionPendingPrefix, $"{Environment.NewLine}pending-");
+
 	}
 }
