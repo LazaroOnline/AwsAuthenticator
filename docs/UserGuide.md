@@ -4,7 +4,7 @@
 
 ## Requirements
 - [Aws CLI](https://aws.amazon.com/cli/).
-- [DotNet 8.0 Runtime](https://dotnet.microsoft.com/download).
+- [DotNet 10.0 Runtime](https://dotnet.microsoft.com/download).
 - Windows (Currently only Windows is supported, but it should be easy to add support for Mac and Linux).
 
 
