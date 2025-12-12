@@ -1,0 +1,25 @@
+<Solution>
+  <Folder Name="/docs/">
+    <File Path="docs/AwsMfaSetup.png" />
+    <File Path="docs/DevelopersGuide.md" />
+    <File Path="docs/UserGuide.md" />
+  </Folder>
+  <Folder Name="/scripts/">
+    <File Path="scripts/Build.ps1" />
+    <File Path="scripts/UpdateAwsCreds.ps1" />
+  </Folder>
+  <Folder Name="/scripts/TaskScheduler/">
+    <File Path="scripts/TaskScheduler/LazaroOnline-AwsAuthenticator-UpdateCreds.xml" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path=".gitignore" />
+    <File Path="GitVersion.yml" />
+    <File Path="README.md" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/UnitTests/UnitTests.csproj" />
+  </Folder>
+  <Project Path="src/AwsAuthenticator.Core/AwsAuthenticator.Core.csproj" />
+  <Project Path="src/AwsAuthenticator.UI/AwsAuthenticator.UI.csproj" />
+</Solution>
