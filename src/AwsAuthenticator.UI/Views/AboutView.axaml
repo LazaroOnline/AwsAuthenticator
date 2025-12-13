@@ -2,10 +2,16 @@
 			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-			 mc:Ignorable="d" d:DesignWidth="390" d:DesignHeight="360"
+			 mc:Ignorable="d" d:DesignWidth="540" d:DesignHeight="360"
 			 x:Class="AwsAuthenticator.Views.AboutView">
 
 	<UserControl.Styles>
+		<Style Selector="TextBox">
+			<Setter Property="Background" Value="Transparent"/>
+			<Setter Property="BorderThickness" Value="0"/>
+			<Setter Property="IsReadOnly" Value="True"/>
+		</Style>
+
 		<Style Selector="Button.DialogButton">
 			<Setter Property="Margin" Value="3"/>
 			<Setter Property="Height" Value="40"/>
@@ -35,7 +41,7 @@
 				Developed by A. Lazaro, 2021.
 			</TextBlock>
 			
-			<TextBlock TextAlignment="Center" Text="{Binding GitVersion}" />
+			<TextBox TextAlignment="Center" Text="{Binding GitVersion}" />
 
 			<StackPanel Margin="5" Orientation="Horizontal" HorizontalAlignment="Center">
 				

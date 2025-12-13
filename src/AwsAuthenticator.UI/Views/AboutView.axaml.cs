@@ -1,38 +1,58 @@
-using Avalonia.Markup.Xaml;
+using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.Markup.Xaml;
 
-namespace AwsAuthenticator.Views
+namespace AwsAuthenticator.Views;
+
+public partial class AboutView : UserControl
 {
-	public partial class AboutView : UserControl
+	// https://avaloniaui.net/docs/input/events
+	public static readonly RoutedEvent<RoutedEventArgs> ExitViewEvent =
+		RoutedEvent.Register<AboutView, RoutedEventArgs>(nameof(ExitView), RoutingStrategies.Bubble);
+
+	public event EventHandler<RoutedEventArgs> ExitView
 	{
-		// https://avaloniaui.net/docs/input/events
-		public static readonly RoutedEvent<RoutedEventArgs> ExitViewEvent =
-			RoutedEvent.Register<AboutView, RoutedEventArgs>(nameof(ExitView), RoutingStrategies.Bubble);
+		add => AddHandler(ExitViewEvent, value);
+		remove => RemoveHandler(ExitViewEvent, value);
+	}
 
-		public event EventHandler<RoutedEventArgs> ExitView
+	public AboutView() : this(null)
+	{ }
+
+	public AboutView(AboutViewModel? viewModel)
+	{
+		this.InitializeComponent();
+		var dataContextViewModel = viewModel ?? new AboutViewModel();
+		this.DataContext = dataContextViewModel;
+	InputElement.KeyDownEvent.AddClassHandler<TopLevel>(OnKeyDownParent, handledEventsToo: true);
+	}
+
+	protected void OnKeyDownParent(object sender, KeyEventArgs e)
+	{
+		OnKeyDown(e);
+	}
+
+	protected override void OnKeyDown(KeyEventArgs e)
+	{
+		if (e.Key == Key.Escape && this.IsVisible)
 		{
-			add => AddHandler(ExitViewEvent, value);
-			remove => RemoveHandler(ExitViewEvent, value);
+			CloseDialog();
+			e.Handled = true;
 		}
+	}
 
-		public AboutView() : this(null)
-		{ }
+	public void CloseDialog(object sender, RoutedEventArgs args)
+	{
+		CloseDialog();
+	}
 
-		public AboutView(AboutViewModel? viewModel)
-		{
-			this.InitializeComponent();
-			var dataContextViewModel = viewModel ?? new AboutViewModel();
-			this.DataContext = dataContextViewModel;
-		}
+	public void CloseDialog()
+	{
+		this.IsVisible = false;
+	}
 
-		private void InitializeComponent()
-		{
-			AvaloniaXamlLoader.Load(this);
-		}
-
-		public void CloseDialog(object sender, RoutedEventArgs args)
-		{
-			this.IsVisible = false;
-		}
+	private void InitializeComponent()
+	{
+		AvaloniaXamlLoader.Load(this);
 	}
 }
