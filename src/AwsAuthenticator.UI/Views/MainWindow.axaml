@@ -12,7 +12,7 @@
 		Title="Aws Authenticator">
 
 	<ScrollViewer>
-		<views:AwsAuthenticatorForm x:Name="AwsAuthenticatorForm" Grid.Row="1" />
+		<views:AwsAuthenticatorForm Grid.Row="1" />
 	</ScrollViewer>
 
 </Window>

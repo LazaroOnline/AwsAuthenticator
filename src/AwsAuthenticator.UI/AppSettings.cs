@@ -1,4 +1,12 @@
-﻿namespace AwsAuthenticator;
+﻿using System.Text.Json.Serialization;
+
+namespace AwsAuthenticator;
+
+// This "SourceGenerationContext" is used to prevent dotnet trimming from breaking the System.Text.Json.Serialization for the specified class.
+// https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/source-generation
+[JsonSourceGenerationOptions(WriteIndented = true)]
+[JsonSerializable(typeof(AppSettings))]
+internal partial class SourceGenerationContext : JsonSerializerContext { }
 
 public class AppSettings
 {

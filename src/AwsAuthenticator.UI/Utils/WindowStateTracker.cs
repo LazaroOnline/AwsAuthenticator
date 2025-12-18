@@ -5,6 +5,16 @@ public static class WindowStateTracker
 	// https://github.com/anakic/Jot
 	public static readonly Jot.Tracker Tracker = new();
 
+	public static void TryTrackWindow(Window window)
+	{
+		try {
+			TrackWindow(window);
+		} catch (Exception ex) {
+			// This may occur when using assembly trimming during the dotnet publish.
+			FileLogger.Log($"Error in '{nameof(TrackWindow)}'.{Environment.NewLine}{ex}");
+		}
+	}
+
 	public static void TrackWindow(Window window)
 	{
 		var initialPosition = window.Position;

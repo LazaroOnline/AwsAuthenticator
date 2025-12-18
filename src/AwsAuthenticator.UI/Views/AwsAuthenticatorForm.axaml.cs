@@ -14,6 +14,7 @@ public partial class AwsAuthenticatorForm : UserControl
 		{
 			AwsTokenTextBox.AttachedToVisualTree += (s, e) => AwsTokenTextBox.Focus();
 		}
+		this.Unloaded += (_, _) => OnUnloadedSaveConfig();
 	}
 
 	private void AwsProfileSourceOptionsExpander_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
@@ -31,5 +32,11 @@ public partial class AwsAuthenticatorForm : UserControl
 	public void OpenAboutDialog(object sender, RoutedEventArgs args)
 	{
 		this.AboutViewDialog.IsVisible = true;
+	}
+
+	public void OnUnloadedSaveConfig()
+	{
+		var viewModel = (AwsAuthenticatorViewModel?)this.DataContext;
+		viewModel?.SaveConfig();
 	}
 }

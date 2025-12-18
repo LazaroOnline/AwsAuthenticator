@@ -29,7 +29,7 @@ dotnet publish $csprojPath `
 -p:DebugType=None `
 -p:EnableCompressionInSingleFile=false `
 -p:PublishAot=false `
--p:PublishTrimmed=false `
+-p:PublishTrimmed=true `
 -p:PublishSingleFile=true 
 # Enabling "PublishTrimmed" trimming works but breaks the "Jot" library used in "WindowStateTracker.cs" to remember the window position during restarts, and throws warnings for "ReactiveUI.WhenAnyMixin.WhenAnyValue<>()".
 # -r "win-x64" 

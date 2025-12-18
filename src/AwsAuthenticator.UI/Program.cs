@@ -65,7 +65,7 @@ public class Program
 		}
 
 		var configBuilder = new ConfigurationBuilder()
-			.SetBasePath(GetExecutingDir())
+			.SetBasePath(AppContext.BaseDirectory)
 			.AddJsonFile(AppSettings.FILENAME, optional: true)
 			.AddUserSecrets<Program>(optional: true)
 			.AddCommandLine(args, CommandlineShortKeyMap);
@@ -145,11 +145,6 @@ public class Program
 			.WithInterFont()
 			.LogToTrace()
 			.UseReactiveUI();
-
-	public static string GetExecutingDir()
-	{
-		return System.AppContext.BaseDirectory ?? Directory.GetCurrentDirectory();
-	}
 
 	// https://www.reactiveui.net/docs/handbook/dependency-inversion/
 	// https://dev.to/ingvarx/avaloniaui-dependency-injection-4aka

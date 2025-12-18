@@ -16,6 +16,7 @@ public class AppSettingsWriter
 		var jsonSerializerOptions = new JsonSerializerOptions
 		{
 			WriteIndented = true,
+			TypeInfoResolver = SourceGenerationContext.Default,
 			DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
 			//PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
 			Converters = {
