@@ -7,11 +7,8 @@
 			 xmlns:progRing="clr-namespace:AvaloniaProgressRing;assembly=AvaloniaProgressRing"
 			 MinWidth="480" MinHeight="333"
 			 mc:Ignorable="d" d:DesignWidth="550" d:DesignHeight="400"
+			 x:DataType="vm:AwsAuthenticatorViewModel"
 			 x:Class="AwsAuthenticator.Views.AwsAuthenticatorForm">
-
-	<Design.DataContext>
-		<vm:AwsAuthenticatorViewModel/>
-	</Design.DataContext>
 
 	<UserControl.Styles>
 		<Style Selector="TextBlock">
