@@ -1,13 +1,11 @@
 <Application xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="using:AwsAuthenticator"
-             x:Class="AwsAuthenticator.App">
-    <Application.DataTemplates>
-        <local:ViewLocator/>
-    </Application.DataTemplates>
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:AwsAuthenticator"
+			 x:Class="AwsAuthenticator.App"
+			 RequestedThemeVariant="Default">
 
-    <Application.Styles>
-        <!--<FluentTheme Mode="Dark"/>
+	<Application.Styles>
+		<!--<FluentTheme Mode="Dark"/>
 		https://github.com/AvaloniaUI/Avalonia/wiki/Breaking-Changes#avaloniathemesfluent-and-avaloniathemessimple-themes
 		https://stackoverflow.com/questions/77666670/how-to-use-standard-theme-colors-in-my-avalonia-custom-control/77680423#77680423
 		https://github.com/AvaloniaUI/Avalonia/blob/0bf3ffc05b4ba6ad59de501099f9d9ba39cbd944/src/Avalonia.Themes.Fluent/Accents/BaseColorsPalette.xaml#L33

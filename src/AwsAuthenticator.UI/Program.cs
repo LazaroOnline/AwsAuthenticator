@@ -1,6 +1,6 @@
 using System.IO;
 using Splat;
-using Avalonia.ReactiveUI;
+using ReactiveUI.Avalonia;
 using Microsoft.Extensions.Configuration;
 
 namespace AwsAuthenticator;
@@ -134,9 +134,9 @@ public class Program
 	public static AppBuilder BuildAvaloniaApp()
 		=> AppBuilder.Configure<App>()
 			.UsePlatformDetect()
+			.WithInterFont()
 			.LogToTrace()
 			.UseReactiveUI();
-
 
 	public static string GetExecutingDir()
 	{
@@ -182,5 +182,4 @@ public class Program
 		var argName = arg.ToLower().TrimStart('-', '/', '\\').Trim();
 		return argName == commandName;
 	}
-
 }
