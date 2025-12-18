@@ -50,6 +50,14 @@ public class Program
 	public static void Main(string[] args)
 	{
 		Console.WriteLine($"Starting {nameof(AwsAuthenticator)} app...");
+		AppDomain.CurrentDomain.UnhandledException += (s, e) => {
+			var ex = e.ExceptionObject as Exception;
+			FileLogger.Log($"Crashed App error:{Environment.NewLine}{ex}");
+		};
+		TaskScheduler.UnobservedTaskException += (s, e) => {
+			FileLogger.Log($"Crashed Task error:{Environment.NewLine}{e.Exception}");
+			e.SetObserved();
+		};
 
 		if (IsHelpCommand(args)) {
 			DisplayHelp();
