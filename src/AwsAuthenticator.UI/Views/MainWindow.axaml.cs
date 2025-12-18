@@ -11,7 +11,13 @@ public partial class MainWindow : Window
 		this.AttachDevTools();
 #endif
 		WindowStateTracker.TryTrackWindow(this);
-		this.Closing += (_, _) => { }; // This is just to prevent dotnet trimming from removing the "Closing" event from the Avalonia Window class.
+		Console.WriteLine($"WindowState: {this.WindowState}, Position: {this.Position}, Width: {this.Width}, Height: {this.Height}");
+
+		this.Closing += (_, _) => {
+			WindowStateTracker.Tracker.Persist(this);
+			WindowStateTracker.Tracker.StopTracking(this);
+			Console.WriteLine($"WindowState: {this.WindowState}, Position: {this.Position}, Width: {this.Width}, Height: {this.Height}");
+		};
 	}
 
 	private void InitializeComponent()

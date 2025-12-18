@@ -3,7 +3,7 @@
 public static class WindowStateTracker
 {
 	// https://github.com/anakic/Jot
-	public static readonly Jot.Tracker Tracker = new();
+	public static readonly Jot.Tracker Tracker = new Jot.Tracker(new Jot.Storage.JsonFileStore(@$"{AppContext.BaseDirectory}\window-state\"));
 
 	public static void TryTrackWindow(Window window)
 	{
@@ -24,8 +24,10 @@ public static class WindowStateTracker
 		Tracker.Configure<Window>()
 			.Id(w => w.Name, trackerNamespace)
 			.Properties(w => new { w.WindowState, w.Position, w.Width, w.Height })
-			.PersistOn(nameof(Window.Closing))
-			.StopTrackingOn(nameof(Window.Closing));
+			// This uses reflection, which won't work with trimming/AOT.
+			//.PersistOn(nameof(Window.Closing))
+			//.StopTrackingOn(nameof(Window.Closing))
+			;
 		Tracker.Track(window);
 
 		if (window.WindowState == WindowState.Minimized)

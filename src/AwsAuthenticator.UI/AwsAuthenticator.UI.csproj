@@ -9,6 +9,7 @@
 		<AssemblyName>AwsAuthenticator</AssemblyName>
 		<ApplicationIcon>App.ico</ApplicationIcon>
 		<AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+		<PublishAot>true</PublishAot>
 	</PropertyGroup>
 
 	<ItemGroup>
