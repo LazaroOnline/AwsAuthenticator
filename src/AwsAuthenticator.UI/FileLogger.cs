@@ -4,7 +4,7 @@ namespace AwsAuthenticator;
 
 public static class FileLogger
 {
-	public const string LogFileName = "AwsAuthenticator.log";
+	public const string LogFileName = $"{nameof(AwsAuthenticator)}.log";
 	public static void Log(string text)
 	{
 		var appDir = AppContext.BaseDirectory;

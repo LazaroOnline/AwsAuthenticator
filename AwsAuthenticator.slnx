@@ -21,5 +21,5 @@
     <Project Path="tests/UnitTests/UnitTests.csproj" />
   </Folder>
   <Project Path="src/AwsAuthenticator.Core/AwsAuthenticator.Core.csproj" />
-  <Project Path="src/AwsAuthenticator.UI/AwsAuthenticator.UI.csproj" />
+  <Project Path="src/AwsAuthenticator.UI/AwsAuthenticator.UI.csproj" DefaultStartup="true"/>
 </Solution>
